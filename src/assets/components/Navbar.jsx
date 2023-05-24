@@ -1,4 +1,4 @@
-import { AppBar, Container, Stack, Toolbar, Typography } from "@mui/material";
+import { AppBar, Button, Container, Stack, Toolbar, Typography } from "@mui/material";
 import React, { useState } from "react";
 import AppleIcon from '@mui/icons-material/Apple';
 
@@ -23,7 +23,7 @@ const Navbar = () => {
     };
 
     return (
-        <AppBar position="static" className="py-3 font-poppins" sx={{ bgcolor: "#F2C94C", color: "#000000" }}>
+        <AppBar position="static" className="py-3 px-5 font-poppins" sx={{ bgcolor: "#F2C94C", color: "#000000" }}>
             <Stack direction={"row"} alignItems={"center"} justifyContent={"space-between"} paddingX={5}>
                 <Toolbar>
                     <AppleIcon />
@@ -44,8 +44,13 @@ const Navbar = () => {
                         MUSIC
                     </Typography>
                 </Toolbar>
-                <Stack direction={"row"}>
-                    <h1>Test</h1>
+                <Stack direction={"row"} gap={5}>
+                    <Button href="/register" variant="text" sx={{ color: "black" }}>
+                        DAFTAR SEKARANG
+                    </Button>
+                    <Button href="/login" variant="contained">
+                        Login
+                    </Button>
                 </Stack>
             </Stack>
         </AppBar>

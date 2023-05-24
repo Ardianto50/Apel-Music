@@ -2,13 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import { Register } from "./pages/Register";
+import { Login } from './pages/Login';
+import App from './App';
 // import { Login } from './pages/Login';
 // import { Navbar } from './assets/components/Navbar';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Register />
+    <App />
   </React.StrictMode>
 );
 

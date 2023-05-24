@@ -1,17 +1,13 @@
 import { Button, TextField } from "@mui/material";
 import Navbar from "./assets/components/Navbar";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./routes/router";
 
 
 function App() {
   return (
     <>
-      <Navbar />
-      <div className="grid place-items-center h-screen">
-        <div className="flex flex-col gap-3 w-96">
-          <TextField size="small" variant="outlined" label={"Test"} />
-          <Button size="small" color="primary" variant="contained">Test</Button>
-        </div>
-      </div>
+      <RouterProvider router={router} />
     </>
   );
 }
