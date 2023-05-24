@@ -7,7 +7,7 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
-        'concert-silhouette': "url('./src/assets/img/12631.jpg')"
+        'concert-silhouette': "url('/src/assets/img/party-silhouette.jpg')"
       }
     },
     fontFamily: {
