@@ -4,13 +4,17 @@ import './index.css';
 import { Register } from "./pages/Register";
 import { Login } from './pages/Login';
 import App from './App';
+import { ThemeProvider } from '@mui/material';
+import theme from './custom_mui/theme';
 // import { Login } from './pages/Login';
 // import { Navbar } from './assets/components/Navbar';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <App />
+    <ThemeProvider theme={theme}>
+      <App />
+    </ThemeProvider>
   </React.StrictMode>
 );
 

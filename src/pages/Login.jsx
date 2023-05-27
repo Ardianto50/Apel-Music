@@ -5,7 +5,7 @@ import Navbar from "../assets/components/Navbar";
 
 export const Login = () => {
   return (
-    <div>
+    <>
       <Navbar />
       <Grid
         container
