@@ -1,53 +1,89 @@
+import { Button, Grid, Stack, TextField, Typography } from "@mui/material";
 import React from "react";
-import { TextField } from "@mui/material";
-import { ButtonComponent } from "../assets/components/Button";
-import Navbar from "../assets/components/Navbar";
 import { Link } from "react-router-dom";
+import Navbar from "../assets/components/Navbar";
 
 export const Login = () => {
   return (
     <div>
       <Navbar />
-      <div className="grid place-items-center h-screen ">
-        <div className="flex flex-col gap-3 lg:w-[700px] lg:h-[600px] md:w-[500px] md:h-[400px] sm:w-[100px]">
-          <h1 className="font-sans text-5xl my-[20px] md:text-3xl sm:text-">
-            Selamat datang Musikers!
-          </h1>
-          <h2 className="font-sans text-2xl mt-[20] mb-[40px] text-gray-500">
-            Login dulu yuk
-          </h2>
-          <div className="my-[10px]">
+      <Grid
+        container
+        sx={{
+          display: "flex",
+          pt: 10,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Grid
+          item
+          container
+          md={6}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
+          <Stack direction={"column"} paddingX={5} justifyContent={"center"}>
+            <Typography variant="h3" fontFamily={"poppins"} color={"black"}>
+              Selamat datang Musikers!
+            </Typography>
+            <Typography
+              variant="h5"
+              paddingTop={3}
+              paddingBottom={5}
+              fontFamily={"poppins"}
+              sx={{ color: "grey" }}
+            >
+              Login dulu yuk
+            </Typography>
             <TextField
               fullWidth
               size="small"
+              type="email"
               variant="outlined"
-              type="text"
-              label={"Masukan Email"}
-            />
-          </div>
-          <div className="my-[10px]">
+              label={"Masulkan Email"}
+              sx={{ my: 2 }}
+            ></TextField>
             <TextField
               fullWidth
               size="small"
-              variant="outlined"
               type="password"
+              variant="outlined"
               label={"Masukan Password"}
-            />
-          </div>
-          <button className="font-sans text-end my-[10px]" onClick={""}>
-            Lupa kata sandi
-          </button>
-          <div className="mt-[30px] mb-[20px]">
-            <ButtonComponent type="contained" text="Masuk" />
-          </div>
-          <div className="my-[20px]">
-            <span className="pr-[5px] font-sans">Belum punya akun?</span>
-            <Link to={"/register"} className="text-blue-500 hover:underline">
-              Daftar di sini
+              sx={{ my: 2 }}
+            ></TextField>
+            <Link to={""} sx={{ cursor: "pointer", pb: 5 }}>
+              <Typography
+                color={"black"}
+                fontFamily={"poppins"}
+                textAlign={"end"}
+                paddingY={3}
+              >
+                Lupa kata sandi
+              </Typography>
             </Link>
-          </div>
-        </div>
-      </div>
+            <Button variant="contained" sx={{ width: 100 }}>
+              Masuk
+            </Button>
+            <Typography paddingTop={3} fontFamily={"poppins"}>
+              Belum punya akun?
+              <Link
+                to={"/register"}
+                sx={{
+                  fontFamily: "poppins",
+                  cursor: "pointer",
+                  textAlign: "end",
+                }}
+              >
+                Daftar disini
+              </Link>
+            </Typography>
+          </Stack>
+        </Grid>
+      </Grid>
     </div>
   );
 };
