@@ -84,6 +84,6 @@ export const Login = () => {
           </Stack>
         </Grid>
       </Grid>
-    </div>
+    </>
   );
 };
