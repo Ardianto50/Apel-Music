@@ -20,6 +20,7 @@ import KategoriCard from "../assets/components/landing_page/KategoriCard";
 import mainUkulele from "../assets/img/mainUkulele.png";
 import bannerImage from "../assets/img/party-silhouette.jpg";
 import { blue, grey } from "@mui/material/colors";
+import style from "../assets/css/pages/LandingPage.css";
 
 const LandingPage = () => {
   const [dummyClass, setDummyClass] = useState([
@@ -237,6 +238,7 @@ const LandingPage = () => {
             },
             textAlign: "center",
             gap: 10,
+            padding: 5,
           }}
         >
           {dummyCategory.map((c, i) => (
@@ -245,24 +247,63 @@ const LandingPage = () => {
         </Box>
       </Box>
 
-      <div className="w-full flex flex-col justify-center lg:flex-row lg:justify-normal items-center min-h-[500px] mb-36">
-        <div className="px-5">
-          <div className="h-[240px] w-[240px] md:h-[360px] md:w-[360px] lg:h-[480px] lg:w-[480px] rounded-full bg-[#F2C94C]">
-            <img
-              src={mainUkulele}
-              className="h-2/3 w-2/3 relative top-[32%] left-[36%]"
-              alt=""
-            />
-            <div className="relative top-[24%] left-[5%] h-1/5 w-1/5 rounded-full bg-[#F2C94C]"></div>
-            <div className="relative top-[16%] left-[28%] h-[12%] w-[12%] rounded-full bg-[#F2C94C]"></div>
-            <div className="relative top-[5%] left-[45%] h-[5%] w-[5%] rounded-full bg-[#F2C94C]"></div>
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          flexDirection: {
+            xs: "column",
+            sm: "column",
+            md: "row",
+            lg: "row",
+          },
+          justifyContent: {
+            md: "center",
+            lg: "normal",
+          },
+          alignItems: "center",
+          minHeight: 500,
+          marginBottom: 36,
+        }}
+      >
+        <Box sx={{ paddingX: 5 }}>
+          <div className="first-circle">
+            <img src={mainUkulele} className="ukulele-img" alt="" />
+            <div className="second-circle"></div>
+            <div className="third-circle"></div>
+            <div className="fourth-circle"></div>
           </div>
-        </div>
-        <div className="flex flex-col gap-8 w-[80%] lg:w-[60%] lg:ml-3 mt-24 lg:mt-5 p-3">
-          <span className="text-4xl font-bold text-[#5D5FEF]">
+        </Box>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "2rem",
+            width: {
+              md: "80%",
+              lg: "60%",
+            },
+            marginLeft: { lg: "0.75rem" },
+            marginTop: { xs: 22, sm: 22, md: 0 },
+          }}
+        >
+          <Typography
+            sx={{
+              fontSize: "2.25rem",
+              lineHeight: "2.5rem",
+              fontWeight: 700,
+              color: "#5D5FEF",
+              textAlign: {
+                xs: "center",
+                sm: "center",
+                md: "left",
+              },
+              marginX: 3,
+            }}
+          >
             Benefit ikut Apel Course
-          </span>
-          <span className="text-justify">
+          </Typography>
+          <Typography textAlign={"justify"} marginX={3}>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae
             dolor ea beatae accusamus neque impedit molestias, qui
             exercitationem earum quos, magnam quam quaerat ullam mollitia at?
@@ -276,9 +317,9 @@ const LandingPage = () => {
             dolores laudantium, incidunt porro doloremque! Aliquid sunt
             obcaecati ut, quod quasi molestias explicabo nemo atque natus
             blanditiis molestiae velit provident porro!
-          </span>
-        </div>
-      </div>
+          </Typography>
+        </Box>
+      </Box>
 
       <Footer />
     </>
