@@ -2,9 +2,28 @@ import React from "react";
 
 const KategoriCard = ({ image, nama }) => {
   return (
-    <div className="m-auto w-60 h-32 flex flex-col justify-center items-center gap-6">
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "8rem",
+        gap: "1.5rem",
+        margin: "auto",
+      }}
+    >
       <img src={image} alt={nama} />
-      <span className="text-2xl block text-center">{nama}</span>
+      <span
+        style={{
+          display: "block",
+          fontSize: "1.25rem",
+          lineHeight: "2rem",
+          textAlign: "center",
+        }}
+      >
+        {nama}
+      </span>
     </div>
   );
 };

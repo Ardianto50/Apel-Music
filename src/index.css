@@ -3,10 +3,5 @@
 @tailwind utilities;
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
 
-.MuiButton-contained {
-    text-transform: none !important;
-}
 
-.MuiButton-text {
-    text-transform: none !important;
-}
+

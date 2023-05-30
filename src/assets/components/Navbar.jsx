@@ -16,24 +16,6 @@ import { Link } from "react-router-dom";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 
 const Navbar = () => {
-  //   const [anchorNav, setAnchorNav] = useState(null);
-  //   const [anchorUser, setAnchorUser] = useState(null);
-
-  //   const handleOpenNavMenu = (event) => {
-  //     setAnchorNav(event.currentTarget);
-  //   };
-
-  //   const handleOpenUserMenu = (event) => {
-  //     setAnchorUser(event.currentTarget);
-  //   };
-
-  //   const handleCloseNavMenu = () => {
-  //     setAnchorNav(null);
-  //   };
-
-  //   const handleCloseUserMenu = () => {
-  //     setAnchorUser(null);
-  //   };
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -83,7 +65,7 @@ const Navbar = () => {
           sx={{ display: { md: "flex", xs: "none" } }}
         >
           <Button href="/register" variant="text" sx={{ color: "black" }}>
-            DAFTAR SEKARANG
+            Daftar Sekarang
           </Button>
           <Button href="/login" variant="contained">
             Login

@@ -1,22 +1,45 @@
 import React from "react";
+import Card from "@mui/material/Card";
+import CardActions from "@mui/material/CardActions";
+import CardContent from "@mui/material/CardContent";
+import CardMedia from "@mui/material/CardMedia";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
 import { rupiah } from "../../utility/formatIDR";
 
 const CourseCard = ({ image, kategori, judul, harga }) => {
   return (
     <Link to={"/"}>
-      <div className="m-auto flex flex-col text-left gap-3 w-[360px] sm:w-[240px] lg:w-[360px] sm:min-h-[360px] min-h-[360px] lg:min-h-[350px] rounded-lg mb-10">
-        <img src={image} alt="" className="h-60 lg:h-60 w-full rounded-lg" />
-        <div className="w-full flex flex-col justify-center gap-2 p-3">
-          <span className="text-gray-500">{kategori}</span>
-          <span className="text-xl font-bold">{judul}</span>
-        </div>
-        <div className="w-full p-3 relative bottom-0 left-0">
-          <span className="font-bold text-xl text-blue-500">
+      <Card
+        sx={{ maxWidth: 345, height: 400, boxShadow: "none", margin: "auto" }}
+      >
+        <CardMedia sx={{ height: 240 }} image={image} title={judul} />
+        <CardContent>
+          <Typography
+            fontWeight={400}
+            align="left"
+            variant="body2"
+            color="text.secondary"
+          >
+            {kategori}
+          </Typography>
+          <Typography
+            fontWeight={600}
+            align="left"
+            gutterBottom
+            variant="h6"
+            component="div"
+          >
+            {judul}
+          </Typography>
+        </CardContent>
+        <CardActions sx={{ position: "relative", bottom: 0, left: 0 }}>
+          <Typography variant="h6" color={"#5D5FEF"} fontWeight={600}>
             {rupiah(harga)}
-          </span>
-        </div>
-      </div>
+          </Typography>
+        </CardActions>
+      </Card>
     </Link>
   );
 };
