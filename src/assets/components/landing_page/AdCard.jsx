@@ -4,16 +4,32 @@ import React from "react";
 const AdCard = ({ header, text }) => {
   return (
     <Card
-      className="h-52 lg:h-64 w-80 py-5 px-3 rounded-lg"
       sx={{
-        borderRadius: 5,
+        borderRadius: "0.5rem",
+        height: {
+          md: "13rem",
+          lg: "16rem",
+        },
+        width: "20rem",
+        paddingY: "1.25rem",
+        paddingX: "0.75rem",
+        margin: "auto",
       }}
     >
-      <CardContent className="flex flex-col justify-evenly h-full gap-5 items-center">
-        <Typography fontFamily={"poppins"} variant="h3" color={"#5D5FEF"}>
+      <CardContent
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-evenly",
+          alignItems: "center",
+          height: "100%",
+          gap: "1.25rem",
+        }}
+      >
+        <Typography fontWeight={600} variant="h3" color={"#5D5FEF"}>
           {header}
         </Typography>
-        <Typography fontFamily={"poppins"} fontWeight={600} variant="body1">
+        <Typography fontWeight={600} variant="body1">
           {text}
         </Typography>
       </CardContent>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Navbar from "../assets/components/Navbar";
-import { Typography } from "@mui/material";
+import { Box, CardMedia, Stack, Typography } from "@mui/material";
 import AdCard from "../assets/components/landing_page/AdCard";
 import Footer from "../assets/components/Footer";
 import CourseCard from "../assets/components/CourseCard";
@@ -18,6 +18,8 @@ import vokal from "../assets/img/vocal.png";
 import orangMainSax from "../assets/img/orang-main-sax.png";
 import KategoriCard from "../assets/components/landing_page/KategoriCard";
 import mainUkulele from "../assets/img/mainUkulele.png";
+import bannerImage from "../assets/img/party-silhouette.jpg";
+import { blue, grey } from "@mui/material/colors";
 
 const LandingPage = () => {
   const [dummyClass, setDummyClass] = useState([
@@ -97,48 +99,151 @@ const LandingPage = () => {
   return (
     <>
       <Navbar />
-      <div className="min-h-[700px] w-full bg-concert-silhouette text-center text-white bg-cover bg-no-repeat bg-center flex flex-col items-center justify-center gap-24 py-10 px-3">
-        <h3 className="text-4xl text-white font-poppins font-semibold">
-          Hi Musiker! Gabung yuk di Apel Music
-        </h3>
-        <h3 className="text-2xl text-white font-poppins">
-          Banyak kelas keren yang bisa menunjang bakat bermusik kamu
-        </h3>
-        <div className="w-full flex flex-wrap justify-center items-center gap-28">
-          <AdCard
-            header={"500+"}
-            text={"Lebih dari kelas biasa yang bisa mengeluarkan bakat kalian"}
-          />
-          <AdCard
-            header={"50+"}
-            text={"Lulusan yang menjadi musisi ternama dengan skill memukau"}
-          />
-          <AdCard
-            header={"10+"}
-            text={"Coach spesial kolaborasi dengan musisi terkenal"}
-          />
-        </div>
-      </div>
-      <div className="w-full flex flex-col justify-center gap-5 p-5 text-center font-poppins my-24">
-        <h4 className="text-3xl font-bold text-blue-500">
+      <CardMedia width={"full"} minHeight={514} image={bannerImage}>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            gap: 5,
+            minHeight: 514,
+            width: "100%",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+            padding: 5,
+          }}
+        >
+          <Typography
+            fontSize={"2rem"}
+            lineHeight={"3rem"}
+            fontWeight={600}
+            color={"white"}
+          >
+            Hi Musiker! Gabung yuk di Apel Music
+          </Typography>
+          <Typography
+            fontSize={"1.5rem"}
+            lineHeight={"2.25rem"}
+            color={"white"}
+          >
+            Banyak kelas keren yang bisa menunjang bakat bermusik kamu
+          </Typography>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: {
+                xs: "column",
+                sm: "column",
+                md: "row",
+                lg: "row",
+              },
+              flexWrap: {
+                sm: "nowrap",
+                md: "wrap",
+              },
+              gap: {
+                xs: 5,
+                sm: 5,
+                lg: 10,
+              },
+              justifyContent: "center",
+              alignItems: "center",
+              marginBottom: 10,
+            }}
+          >
+            <AdCard
+              header={"500+"}
+              text={
+                "Lebih dari kelas biasa yang bisa mengeluarkan bakat kalian"
+              }
+            />
+            <AdCard
+              header={"50+"}
+              text={"Lulusan yang menjadi musisi ternama dengan skill memukau"}
+            />
+            <AdCard
+              header={"10+"}
+              text={"Coach spesial kolaborasi dengan musisi terkenal"}
+            />
+          </Box>
+        </Box>
+      </CardMedia>
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          gap: 5,
+          padding: 5,
+          textAlign: "center",
+          marginY: 10,
+        }}
+      >
+        <Typography variant="h5" fontWeight={700} color={blue[500]}>
           Explore kelas favorit
-        </h4>
-        <div className="m-auto w-[90%] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5 py-5 my-16">
-          {dummyClass.map((course) => (
-            <CourseCard {...course} />
+        </Typography>
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: {
+              sm: "repeat(1, minmax(0, 1fr))",
+              md: "repeat(2, minmax(0, 1fr))",
+              lg: "repeat(3, minmax(0, 1fr))",
+            },
+            gap: 8,
+            paddingY: 5,
+            marginY: 5,
+          }}
+        >
+          {dummyClass.map((course, i) => (
+            <CourseCard key={i} {...course} />
           ))}
-        </div>
-      </div>
-      <div className="w-full flex flex-col bg-gray-100 items-center py-20 gap-5 text-center font-poppins my-24">
-        <h4 className="text-3xl font-bold text-blue-500">
+        </Box>
+      </Box>
+      <Box
+        sx={{
+          width: "100%",
+          display: "flex",
+          flexDirection: "column",
+          backgroundColor: grey[100],
+          alignItems: "center",
+          paddingY: 20,
+          gap: 10,
+          textAlign: "center",
+          marginY: 5,
+        }}
+      >
+        <Typography
+          sx={{
+            fontSize: {
+              xs: "1.5rem",
+              sm: "1.875rem",
+            },
+            lineHeight: "2.25rem",
+            fontWeight: 700,
+            color: blue[500],
+          }}
+        >
           Pilih kelas impian kamu
-        </h4>
-        <div className="m-auto w-[90%] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-24 py-5 my-16">
-          {dummyCategory.map((c) => (
-            <KategoriCard {...c} />
+        </Typography>
+        <Box
+          sx={{
+            width: "100%",
+            display: "grid",
+            gridTemplateColumns: {
+              xs: "repeat(2, minmax(0, 1fr))",
+              sm: "repeat(3, minmax(0, 1fr))",
+              md: "repeat(4, minmax(0, 1fr))",
+            },
+            textAlign: "center",
+            gap: 10,
+          }}
+        >
+          {dummyCategory.map((c, i) => (
+            <KategoriCard key={i} {...c} />
           ))}
-        </div>
-      </div>
+        </Box>
+      </Box>
 
       <div className="w-full flex flex-col justify-center lg:flex-row lg:justify-normal items-center min-h-[500px] mb-36">
         <div className="px-5">
