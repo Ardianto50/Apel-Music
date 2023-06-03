@@ -21,6 +21,7 @@ import mainUkulele from "../assets/img/mainUkulele.png";
 import bannerImage from "../assets/img/party-silhouette.jpg";
 import { blue, grey } from "@mui/material/colors";
 import style from "../assets/css/pages/LandingPage.css";
+import { v4 as uuidv4 } from "uuid";
 
 const LandingPage = () => {
   const [dummyClass, setDummyClass] = useState([
@@ -66,41 +67,53 @@ const LandingPage = () => {
     {
       image: drum,
       nama: "Drum",
+      link: "/course-menu/drum",
     },
     {
       image: orangMainPiano,
       nama: "Piano",
+      link: "/course-menu/piano",
     },
     {
       image: gitar,
       nama: "Gitar",
+      link: "/course-menu/gitar",
     },
     {
       image: gitar,
       nama: "Bass",
+      link: "/course-menu/bass",
     },
     {
       image: biola,
       nama: "Biola",
+      link: "/course-menu/biola",
     },
     {
       image: vokal,
       nama: "Menyanyi",
+      link: "/course-menu/vokal",
     },
     {
       image: orangMainSax,
       nama: "Flute",
+      link: "/course-menu/flute",
     },
     {
       image: orangMainSax,
       nama: "Saxophone",
+      link: "/course-menu/saxophone",
     },
   ];
 
   return (
     <>
-      <Navbar />
-      <CardMedia width={"full"} minHeight={514} image={bannerImage}>
+      {/* Navbar */}
+      <Navbar isLoggedIn={true} />
+      {/* End Navbar */}
+
+      {/* Banner */}
+      <CardMedia width={"full"} image={bannerImage}>
         <Box
           sx={{
             display: "flex",
@@ -169,6 +182,9 @@ const LandingPage = () => {
           </Box>
         </Box>
       </CardMedia>
+      {/* End Banner */}
+
+      {/* Course List */}
       <Box
         sx={{
           width: "100%",
@@ -194,13 +210,18 @@ const LandingPage = () => {
             gap: 8,
             paddingY: 5,
             marginY: 5,
+            margin: "auto",
+            maxWidth: "1200px",
           }}
         >
           {dummyClass.map((course, i) => (
-            <CourseCard key={i} {...course} />
+            <CourseCard key={i} {...course} secureId={uuidv4()} />
           ))}
         </Box>
       </Box>
+      {/* End Course List */}
+
+      {/* Category List */}
       <Box
         sx={{
           width: "100%",
@@ -239,6 +260,7 @@ const LandingPage = () => {
             textAlign: "center",
             gap: 10,
             padding: 5,
+            maxWidth: "1200px",
           }}
         >
           {dummyCategory.map((c, i) => (
@@ -246,7 +268,9 @@ const LandingPage = () => {
           ))}
         </Box>
       </Box>
+      {/* End Category List */}
 
+      {/* Benefit */}
       <Box
         sx={{
           width: "100%",
@@ -303,7 +327,7 @@ const LandingPage = () => {
           >
             Benefit ikut Apel Course
           </Typography>
-          <Typography textAlign={"justify"} marginX={3}>
+          <Typography textAlign={"justify"} maxWidth={1200} marginX={3}>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae
             dolor ea beatae accusamus neque impedit molestias, qui
             exercitationem earum quos, magnam quam quaerat ullam mollitia at?
@@ -320,8 +344,11 @@ const LandingPage = () => {
           </Typography>
         </Box>
       </Box>
+      {/* End Benefit */}
 
+      {/* Footer */}
       <Footer />
+      {/* End Footer */}
     </>
   );
 };

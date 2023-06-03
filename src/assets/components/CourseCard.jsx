@@ -8,13 +8,23 @@ import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
 import { rupiah } from "../../utility/formatIDR";
 
-const CourseCard = ({ image, kategori, judul, harga }) => {
+const CourseCard = ({ secureId, image, kategori, judul, harga }) => {
   return (
-    <Link to={"/"}>
+    <Link to={"/course-details/" + secureId}>
       <Card
-        sx={{ maxWidth: 345, height: 400, boxShadow: "none", margin: "auto" }}
+        sx={{
+          maxWidth: 350,
+          height: 400,
+          boxShadow: "none",
+          margin: "auto",
+          borderRadius: "16px",
+        }}
       >
-        <CardMedia sx={{ height: 240 }} image={image} title={judul} />
+        <CardMedia
+          sx={{ height: { xs: 230, sm: 230, md: 240 }, borderRadius: "16px" }}
+          image={image}
+          title={judul}
+        />
         <CardContent>
           <Typography
             fontWeight={400}

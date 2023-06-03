@@ -4,6 +4,7 @@ import { Register } from "../pages/Register";
 import LandingPage from "../pages/LandingPage";
 import EmailResetPassword from "../pages/EmailResetPassword";
 
+// NOTE: ini nggak dipake lagi
 export const router = createBrowserRouter([
   {
     path: "/",
