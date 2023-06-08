@@ -55,7 +55,7 @@ export const Login = () => {
               label={"Masukan Password"}
               sx={{ my: 2 }}
             ></TextField>
-            <Link to={""} sx={{ cursor: "pointer", pb: 5 }}>
+            <Link to={"/reset-password"} sx={{ cursor: "pointer", pb: 5 }}>
               <Typography
                 color={"black"}
                 fontFamily={"poppins"}

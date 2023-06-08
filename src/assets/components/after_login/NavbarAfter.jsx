@@ -1,19 +1,23 @@
 import AppleIcon from "@mui/icons-material/Apple";
+import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
+import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
+import ShoppingCartRoundedIcon from "@mui/icons-material/ShoppingCartRounded";
+import SchoolRoundedIcon from "@mui/icons-material/SchoolRounded";
+import DescriptionRoundedIcon from "@mui/icons-material/DescriptionRounded";
 import {
   AppBar,
-  Button,
-  Stack,
-  Toolbar,
-  Grid,
   Box,
-  Tooltip,
+  Grid,
   Menu,
   MenuItem,
+  Stack,
+  Toolbar,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import { React, useState } from "react";
 import { Link } from "react-router-dom";
-import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 
 const NavbarAfter = () => {
   //   const [anchorNav, setAnchorNav] = useState(null);
@@ -56,8 +60,8 @@ const NavbarAfter = () => {
         paddingX={5}
       >
         <Toolbar>
-          <Link to={"/"} style={{ display: "flex" }}>
-            <AppleIcon sx={{ display: "flex", alignItems: "end", pt: 0.2 }} />
+          <Link to={"/"} style={{ display: "flex", alignItems: "center" }}>
+            <AppleIcon />
             <Typography
               variant="h6"
               noWrap
@@ -66,7 +70,7 @@ const NavbarAfter = () => {
               sx={{
                 mr: 2,
                 display: "flex",
-                alignItems: "baseline",
+                textAlign: "center",
                 fontWeight: 700,
                 color: "inherit",
                 textDecoration: "none",
@@ -80,14 +84,31 @@ const NavbarAfter = () => {
         <Stack
           direction={"row"}
           gap={5}
+          alignItems={"center"}
           sx={{ display: { md: "flex", xs: "none" } }}
         >
-          <Button href="/register" variant="text" sx={{ color: "black" }}>
-            DAFTAR SEKARANG
-          </Button>
-          <Button href="/login" variant="contained">
-            Login
-          </Button>
+          <ShoppingCartRoundedIcon />
+          <Typography
+            variant="h6"
+            fontFamily={"sans-serif"}
+            noWrap
+            sx={{ cursor: "pointer" }}
+          >
+            Kelasku
+          </Typography>
+          <Typography
+            variant="h6"
+            fontFamily={"sans-serif"}
+            noWrap
+            sx={{ cursor: "pointer" }}
+          >
+            Pembelian
+          </Typography>
+          <Typography variant="h6" noWrap>
+            |
+          </Typography>
+          <PersonRoundedIcon />
+          <LogoutRoundedIcon />
         </Stack>
         <Grid
           item
@@ -102,8 +123,7 @@ const NavbarAfter = () => {
               <MenuRoundedIcon></MenuRoundedIcon>
             </Tooltip>
             <Menu
-              id="demo-positioned-menu"
-              aria-labelledby="demo-positioned-button"
+              id="positioned-menu"
               anchorEl={anchorEl}
               open={open}
               onClose={handleClose}
@@ -116,11 +136,35 @@ const NavbarAfter = () => {
                 horizontal: "left",
               }}
             >
-              <Link to={"/login"}>
-                <MenuItem>Login</MenuItem>
+              <Link to={""}>
+                <MenuItem>
+                  <PersonRoundedIcon sx={{ marginRight: 4 }} />
+                  Profile
+                </MenuItem>
               </Link>
-              <Link to={"/register"}>
-                <MenuItem>Daftar Sekarang</MenuItem>
+              <Link to={""}>
+                <MenuItem>
+                  <ShoppingCartRoundedIcon sx={{ marginRight: 4 }} />
+                  Keranjang
+                </MenuItem>
+              </Link>
+              <Link to={""}>
+                <MenuItem>
+                  <SchoolRoundedIcon sx={{ marginRight: 4 }} />
+                  Kelasku
+                </MenuItem>
+              </Link>
+              <Link to={""}>
+                <MenuItem>
+                  <DescriptionRoundedIcon sx={{ marginRight: 4 }} />
+                  Pembelian
+                </MenuItem>
+              </Link>
+              <Link to={""}>
+                <MenuItem>
+                  <LogoutRoundedIcon sx={{ marginRight: 4 }} />
+                  Log out
+                </MenuItem>
               </Link>
             </Menu>
           </Box>
