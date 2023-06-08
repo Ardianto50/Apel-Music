@@ -66,7 +66,7 @@ const DetailsCourse = () => {
           sx={{
             display: "flex",
             flexDirection: { xs: "column", sm: "column", md: "row" },
-            gap: 5,
+            gap: { xs: 6, sm: 6, md: 5 },
             maxWidth: "2000px",
             margin: "auto",
             paddingX: "50px",
@@ -86,7 +86,7 @@ const DetailsCourse = () => {
             sx={{
               display: "flex",
               flexDirection: "column",
-              gap: 1,
+              gap: { xs: 2, sm: 2, md: 1 },
               justifyContent: "space-between",
               minHeight: "270px",
             }}
@@ -127,14 +127,16 @@ const DetailsCourse = () => {
             {/* End Section (Category, Title, Price) */}
 
             {/* Section Select */}
-            <Box sx={{ maxWidth: "250px" }}>
+            <Box sx={{ maxWidth: "250px", width: { xs: "100%", sm: "100%" } }}>
               <FormControl fullWidth>
-                <InputLabel id="demo-simple-select-label">Age</InputLabel>
+                <InputLabel id="demo-simple-select-label">
+                  Pilih Jadwal Kelas
+                </InputLabel>
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
                   value={jadwal}
-                  label="Jadwal"
+                  label="Pilih Jadwal Kelas"
                   onChange={(e) => setJadwal(e.target.value)}
                 >
                   <MenuItem value={10}>Senin, 25 Juli 2022</MenuItem>
@@ -159,6 +161,7 @@ const DetailsCourse = () => {
                 sx={{
                   width: "233.5px",
                   borderRadius: "0.5rem",
+                  marginY: "0.25rem",
                 }}
                 variant="outlined"
               >
@@ -168,6 +171,7 @@ const DetailsCourse = () => {
                 sx={{
                   width: "233.5px",
                   borderRadius: "0.5rem",
+                  marginY: "0.25rem",
                 }}
                 variant="contained"
               >
@@ -229,7 +233,7 @@ const DetailsCourse = () => {
           fontWeight={700}
           color={blue[500]}
         >
-          Explore kelas favorit
+          Kelas lain yang mungkin kamu suka
         </Typography>
         <Box
           sx={{

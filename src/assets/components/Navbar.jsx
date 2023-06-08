@@ -3,7 +3,6 @@ import {
   AppBar,
   Button,
   Stack,
-  Toolbar,
   Box,
   Tooltip,
   Menu,
@@ -20,9 +19,11 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 const Navbar = ({ isLoggedIn }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
@@ -151,7 +152,7 @@ const Navbar = ({ isLoggedIn }) => {
 
   return (
     <AppBar
-      position="sticky"
+      position="relative"
       className="py-3 px-5 font-poppins"
       sx={{ bgcolor: "#F2C94C", color: "#000000" }}
     >
