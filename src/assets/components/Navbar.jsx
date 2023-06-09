@@ -61,7 +61,7 @@ const Navbar = ({ isLoggedIn }) => {
                   Kelasku
                 </Button>
                 <Button
-                  href="/login"
+                  href="/invoice"
                   variant="text"
                   sx={{ color: "black", fontWeight: 700 }}
                 >
@@ -129,7 +129,7 @@ const Navbar = ({ isLoggedIn }) => {
             <Link to={"/my-class"}>
               <MenuItem>Kelas ku</MenuItem>
             </Link>
-            <Link to={"/register"}>
+            <Link to={"/invoice"}>
               <MenuItem>Pembelian</MenuItem>
             </Link>
             <Link to={"/register"}>

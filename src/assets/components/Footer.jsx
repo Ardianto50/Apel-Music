@@ -8,6 +8,8 @@ import SocialMedia from "./SocialMedia";
 import style from "../css/components/Footer.css";
 
 const Footer = () => {
+  const useStyle = style;
+
   return (
     <div className="footer-container">
       <div className="section-right">

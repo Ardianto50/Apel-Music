@@ -164,6 +164,8 @@ const DetailsCourse = () => {
                   marginY: "0.25rem",
                 }}
                 variant="outlined"
+                component={"a"}
+                href={"/checkout"}
               >
                 Masukkan ke keranjang
               </Button>
