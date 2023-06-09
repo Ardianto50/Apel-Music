@@ -2,33 +2,37 @@ import React from "react";
 import Navbar from "../assets/components/Navbar";
 import { Button, Grid, Stack, TextField, Typography } from "@mui/material";
 
-export const EmailResetPassword = () => {
+export const NewPassResetPassword = () => {
   return (
     <>
       <Navbar />
       <Grid container justifyContent={"center"} paddingY={{ md: 25, xs: 10 }}>
         <Grid item container md={6} marginY={4} paddingX={4}>
           <Stack direction={"column"}>
-            <Typography variant="h3" fontFamily={"poppins"} color={"black"}>
-              Reset Password
-            </Typography>
             <Typography
-              variant="h5"
-              paddingTop={3}
-              paddingBottom={5}
+              variant="h3"
+              paddingBottom={8}
               fontFamily={"poppins"}
-              sx={{ color: "grey" }}
+              color={"black"}
             >
-              Silahkan masukan terlebih dahulu email anda
+              Reset Password
             </Typography>
           </Stack>
           <TextField
-            required
             fullWidth
+            required
+            size="medium"
+            variant="outlined"
+            type="password"
+            label={"Password Baru"}
+          />
+          <TextField
+            fullWidth
+            required
             size="medium"
             variant="outlined"
             type="text"
-            label={"Masukkan Email"}
+            label={"Konfirmasi Password Baru"}
             sx={{ marginY: 4 }}
           />
           <Stack direction={"row"}>
@@ -55,7 +59,7 @@ export const EmailResetPassword = () => {
                 minWidth: "10rem",
               }}
             >
-              Konfirmasi
+              Kirim
             </Button>
           </Stack>
         </Grid>

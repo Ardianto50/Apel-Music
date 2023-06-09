@@ -1,76 +1,128 @@
+import { Button, Grid, Stack, TextField, Typography } from "@mui/material";
 import React from "react";
-import { Button, TextField } from "@mui/material";
-import Navbar from "../assets/components/Navbar";
 import { Link } from "react-router-dom";
+import Navbar from "../assets/components/Navbar";
 
 export const Register = () => {
   return (
     <>
       <Navbar />
-      <div className="grid place-items-center h-screen w-full px-5 font-poppins">
-        <div className="flex flex-col gap-3 w-[95%] sm:w-[80%] lg:w-[60%] xl:w-[40%] md:w-[70%]">
-          <h1 className=" text-5xl my-[20px]">Selamat datang Musikers!</h1>
-          <h2 className=" text-2xl mt-[20] mb-[40px] text-gray-500">
-            Yuk daftar terlebih dahulu akun kamu
-          </h2>
-          <div className="my-[10px]">
-            <TextField
-              fullWidth
-              size="small"
-              variant="outlined"
-              type="text"
-              label={"Masukkan Nama Lengkap"}
-            />
-          </div>
-          <div className="my-[10px]">
-            <TextField
-              fullWidth
-              size="small"
-              variant="outlined"
-              type="text"
-              label={"Masukkan Email"}
-            />
-          </div>
-          <div className="my-[10px]">
-            <TextField
-              fullWidth
-              size="small"
-              variant="outlined"
-              type="password"
-              label={"Masukkan Password"}
-            />
-          </div>
-          <div className="my-[10px]">
-            <TextField
-              fullWidth
-              size="small"
-              variant="outlined"
-              type="password"
-              label={"Konfirmasi Password"}
-            />
-          </div>
-          <div className="flex align-middle place-items-center mt-[30px] mb-[20px]">
-            <Button
-              size="large"
-              variant="contained"
-              color="primary"
-              className="rounded-lg"
-              sx={{
-                borderRadius: 2,
-                minWidth: "8rem",
-              }}
+      <Grid
+        container
+        sx={{
+          display: "flex",
+          py: 10,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Grid
+          item
+          container
+          md={6}
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+          }}
+        >
+          <Stack direction={"column"} paddingX={5} justifyContent={"center"}>
+            <Typography variant="h3" fontFamily={"poppins"} color={"black"}>
+              Selamat datang Musikers!
+            </Typography>
+            <Typography
+              variant="h5"
+              paddingTop={3}
+              paddingBottom={5}
+              fontFamily={"poppins"}
+              sx={{ color: "grey" }}
             >
-              Daftar
-            </Button>
-            <div className="ml-[150px]">
-              <span className="pr-[5px]">Sudah punya akun?</span>
-              <Link to={"/login"} className="text-blue-500 hover:underline">
-                Login di sini
+              Yuk daftar terlebih dahulu akun kamu
+            </Typography>
+            <TextField
+              fullWidth
+              required
+              size="small"
+              type="text"
+              variant="outlined"
+              label={"Masulkan Nama Lengkap"}
+              sx={{ my: 2 }}
+            />
+            <TextField
+              fullWidth
+              required
+              size="small"
+              type="email"
+              variant="outlined"
+              label={"Masulkan Email"}
+              sx={{ my: 2 }}
+            />
+            <TextField
+              fullWidth
+              required
+              size="small"
+              type="password"
+              variant="outlined"
+              label={"Masukan Password"}
+              sx={{ my: 2 }}
+            />
+            <TextField
+              fullWidth
+              required
+              size="small"
+              type="password"
+              variant="outlined"
+              label={"Konfirmasi Password"}
+              sx={{ my: 2 }}
+            />
+            <Stack
+              direction={"row"}
+              marginY={4}
+              justifyContent={"space-between"}
+              alignItems={"center"}
+            >
+              <Grid item md={4}>
+                <Button variant="contained" sx={{ width: 100 }}>
+                  Daftar
+                </Button>
+              </Grid>
+              <Grid item md={4} sx={{ display: { md: "flex", xs: "none" } }}>
+                <Typography fontFamily={"poppins"}>
+                  Sudah punya akun?
+                  <Link
+                    to={"/login"}
+                    sx={{
+                      fontFamily: "poppins",
+                      cursor: "pointer",
+                      textAlign: "end",
+                    }}
+                  >
+                    Login disini
+                  </Link>
+                </Typography>
+              </Grid>
+              <Grid item md={4} bgcolor={"aqua"}></Grid>
+            </Stack>
+            <Typography
+              textAlign={"center"}
+              fontFamily={"poppins"}
+              sx={{ display: { md: "none", xs: "flex" } }}
+            >
+              Sudah punya akun?
+              <Link
+                to={"/login"}
+                sx={{
+                  fontFamily: "poppins",
+                  cursor: "pointer",
+                  textAlign: "end",
+                }}
+              >
+                Login disini
               </Link>
-            </div>
-          </div>
-        </div>
-      </div>
+            </Typography>
+          </Stack>
+        </Grid>
+      </Grid>
     </>
   );
 };
