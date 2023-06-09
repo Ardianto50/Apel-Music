@@ -7,6 +7,7 @@ import EmailResetPassword from "../pages/EmailResetPassword";
 import MenuCourse from "../pages/MenuCourse";
 import DetailsCourse from "../pages/DetailsCourse";
 import MenuInvoices from "../pages/MenuInvoices";
+import DetailsInvoice from "../pages/DetailsInvoice";
 
 const AppRouter = () => {
   return (
@@ -19,6 +20,7 @@ const AppRouter = () => {
         <Route path="/course-menu/:categoryId" element={<MenuCourse />} />
         <Route path="/course-details/:courseId" element={<DetailsCourse />} />
         <Route path="/invoice" element={<MenuInvoices />} />
+        <Route path="/invoice/rincian-invoice" element={<DetailsInvoice />} />
       </Routes>
     </>
   );
