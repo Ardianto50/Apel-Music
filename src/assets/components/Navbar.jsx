@@ -54,7 +54,7 @@ const Navbar = ({ isLoggedIn }) => {
                   <ShoppingCartIcon />
                 </Button>
                 <Button
-                  href="/register"
+                  href="/my-class"
                   variant="text"
                   sx={{ color: "black", fontWeight: 700 }}
                 >
@@ -126,7 +126,7 @@ const Navbar = ({ isLoggedIn }) => {
             <Link to={"/register"}>
               <MenuItem>Logout</MenuItem>
             </Link>
-            <Link to={"/register"}>
+            <Link to={"/my-class"}>
               <MenuItem>Kelas ku</MenuItem>
             </Link>
             <Link to={"/register"}>
