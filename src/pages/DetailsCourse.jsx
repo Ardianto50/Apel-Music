@@ -25,7 +25,7 @@ const DetailsCourse = () => {
   const { courseId } = useParams();
 
   useEffect(() => {
-    console.log(courseId);
+    window.scrollTo(0, 0); // sewaktu page dibuka, langsung scroll ke atas
   }, []);
 
   const [jadwal, setJadwal] = useState("");
@@ -71,7 +71,6 @@ const DetailsCourse = () => {
             margin: "auto",
             paddingX: "50px",
             paddingY: "30px",
-            height: "100%",
           }}
         >
           <Box

@@ -12,6 +12,8 @@ export const ListClass = ({ img, category, name, schedule }) => {
           justifyContent: "flex-start",
           flexDirection: { xs: "column", sm: "column", md: "row" },
           gap: "2rem",
+          width: "100%",
+          maxWidth: "1920px",
           margin: "0.5rem",
         }}
       >
