@@ -43,7 +43,12 @@ export const SuccesPurchase = () => {
           >
             Pembelian Berhasil
           </Typography>
-          <Typography variant="h6" marginY={2} fontStyle={"inherit"}>
+          <Typography
+            variant="h6"
+            paddingX={1.1}
+            marginY={2}
+            fontStyle={"inherit"}
+          >
             Yey! Kamu telah berhasil membeli kursus di Apel Music
           </Typography>
           <Grid flexDirection={"row"}>
