@@ -9,6 +9,7 @@ import { SuccesPurchase } from "../pages/SuccesPurchase";
 import { MyClass } from "../pages/MyClass";
 import { Checkout } from "../pages/Checkout";
 
+// NOTE: ini nggak dipake lagi
 export const router = createBrowserRouter([
   {
     path: "/",

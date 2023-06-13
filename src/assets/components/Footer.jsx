@@ -5,33 +5,34 @@ import YouTubeIcon from "@mui/icons-material/YouTube";
 import TelegramIcon from "@mui/icons-material/Telegram";
 import EmailIcon from "@mui/icons-material/Email";
 import SocialMedia from "./SocialMedia";
+import style from "../css/components/Footer.css";
 
 const Footer = () => {
+  const useStyle = style;
+
   return (
-    <div className="flex flex-wrap justify-center gap-24 w-full min-h-72 relative bottom-0 left-0 right-0 bg-[#F2C94C] font-poppins px-10 py-10">
-      <div className="flex flex-col gap-5 w-full lg:w-1/4 h-full">
-        <span className="text-xl font-bold">Tentang</span>
-        <span className="text-justify">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit impedit
-          minus nostrum architecto dicta deserunt voluptatem asperiores. Ipsum
-          itaque earum quam voluptatibus animi natus et alias vero modi ipsa,
-          fugiat quod vel laborum quasi culpa nemo laboriosam, magnam debitis
-          sint optio! Vel mollitia commodi eaque dolore aspernatur consequatur
-          numquam pariatur.
+    <div className="footer-container">
+      <div className="section-right">
+        <span className="section-head">Tentang</span>
+        <span style={{ textAlign: "justify" }}>
+          Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+          accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae
+          ab illo inventore veritatis et quasi architecto beatae vitae dicta
+          sunt explicabo.
         </span>
       </div>
-      <div className="flex flex-col gap-5 w-full lg:w-1/4 h-full">
-        <span className="text-xl font-bold">Produk</span>
-        <div className="flex gap-24 pl-10">
+      <div className="section-right">
+        <span className="section-head">Produk</span>
+        <div className="category-list">
           <div>
-            <ul className="list-disc flex flex-col gap-3">
+            <ul className="category">
               <li>Biola</li>
               <li>Gitar</li>
               <li>Drum</li>
             </ul>
           </div>
           <div>
-            <ul className="list-disc flex flex-col gap-3">
+            <ul className="category">
               <li>Menyanyi</li>
               <li>Piano</li>
               <li>Saxophone</li>
@@ -39,17 +40,17 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col gap-5 w-full lg:w-1/3 h-full">
-        <div className="flex flex-col gap-5 w-full h-full">
-          <span className="text-xl font-bold">Alamat</span>
-          <span className="text-justify">
+      <div className="section-left">
+        <div className="section-left-child">
+          <span className="section-head">Alamat</span>
+          <span style={{ textAlign: "justify" }}>
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Sit impedit
             minus nostrum architecto dicta deserunt voluptatem asperiores.
           </span>
         </div>
-        <div className="flex flex-col gap-5 w-full h-full">
-          <span className="text-xl font-bold">Kontak</span>
-          <div className="flex flex-wrap justify-center md:justify-normal gap-5 p-2">
+        <div className="section-left-child">
+          <span className="section-head">Kontak</span>
+          <div className="contact">
             <SocialMedia
               icon={<CallIcon fontSize="large" />}
               href={"https://www.facebook.com"}
