@@ -32,7 +32,7 @@ export const MyClass = () => {
           gap: "1rem",
           width: "100%",
           maxWidth: "1920px",
-          paddingX: { xs: "0.5rem", sm: "0.5rem", md: "3rem", lg: "5rem" },
+          paddingX: { xs: "1.5rem", sm: "1.5rem", md: "3rem", lg: "5rem" },
           paddingY: "3rem",
           minHeight: "80vh",
           marginX: "auto",
