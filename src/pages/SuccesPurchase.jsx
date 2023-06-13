@@ -45,7 +45,7 @@ export const SuccesPurchase = () => {
           </Typography>
           <Typography
             variant="h6"
-            paddingX={1}
+            paddingX={1.1}
             marginY={2}
             fontStyle={"inherit"}
           >
