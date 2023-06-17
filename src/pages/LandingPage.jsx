@@ -109,7 +109,7 @@ const LandingPage = () => {
   return (
     <>
       {/* Navbar */}
-      <Navbar isLoggedIn={true} />
+      <Navbar isLoggedIn={false} />
       {/* End Navbar */}
 
       {/* Banner */}

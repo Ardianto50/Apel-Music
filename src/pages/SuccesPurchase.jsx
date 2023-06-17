@@ -61,7 +61,7 @@ export const SuccesPurchase = () => {
                 Ke Beranda
               </Button>
             </Link>
-            <Link to={"/login"}>
+            <Link to={"/invoice"}>
               <Button
                 variant="contained"
                 sx={{ marginY: { md: 5, xs: 2 }, marginX: 2, fontSize: 22 }}

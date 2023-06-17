@@ -161,6 +161,7 @@ const DetailsCourse = () => {
                   width: "233.5px",
                   borderRadius: "0.5rem",
                   marginY: "0.25rem",
+                  textAlign: "center",
                 }}
                 variant="outlined"
                 component={"a"}

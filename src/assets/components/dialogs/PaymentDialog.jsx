@@ -60,7 +60,7 @@ const PaymentListItem = ({ id, logo, name, choosen, setChoosen }) => {
   );
 };
 
-const PaymentDialog = ({ open, handleClose }) => {
+const PaymentDialog = ({ open, handleClose, onSubmit }) => {
   const [choosen, setChoosen] = useState("");
 
   const paymentMethods = [
@@ -121,7 +121,7 @@ const PaymentDialog = ({ open, handleClose }) => {
             <Button variant="outlined" fullWidth onClick={handleClose}>
               Batal
             </Button>
-            <Button variant="contained" fullWidth>
+            <Button onClick={onSubmit} variant="contained" fullWidth>
               Bayar
             </Button>
           </Box>

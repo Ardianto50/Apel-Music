@@ -1,9 +1,15 @@
 import { Button, Grid, Stack, TextField, Typography } from "@mui/material";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../assets/components/Navbar";
 
 export const Register = () => {
+  const navigate = useNavigate();
+
+  const onSubmitRegister = () => {
+    navigate("/email-confirmed");
+  };
+
   return (
     <>
       <Navbar />
@@ -82,7 +88,11 @@ export const Register = () => {
               alignItems={"center"}
             >
               <Grid item md={4}>
-                <Button variant="contained" sx={{ width: 100 }}>
+                <Button
+                  onClick={onSubmitRegister}
+                  variant="contained"
+                  sx={{ width: 100 }}
+                >
                   Daftar
                 </Button>
               </Grid>

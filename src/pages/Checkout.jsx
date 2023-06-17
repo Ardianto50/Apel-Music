@@ -10,8 +10,9 @@ import saxophone from "../assets/img/saxophone.png";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { rupiah } from "../utility/formatIDR";
 import PaymentDialog from "../assets/components/dialogs/PaymentDialog";
+import { useNavigate } from "react-router-dom";
 
-const CheckoutList = ({ isCheck, img, category, name, schedule }) => {
+const CheckoutList = ({ img, category, name, schedule }) => {
   return (
     <Box
       sx={{
@@ -36,7 +37,6 @@ const CheckoutList = ({ isCheck, img, category, name, schedule }) => {
       >
         <Checkbox
           sx={{ placeSelf: { xs: "start", sm: "start", md: "center" } }}
-          checked={isCheck}
         />
         <ListClass {...{ img, category, name, schedule }} />
       </Box>
@@ -53,31 +53,32 @@ const CheckoutList = ({ isCheck, img, category, name, schedule }) => {
 
 export const Checkout = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const onSubmit = () => {
+    navigate("/success-purchase");
+  };
 
   const dummyData = [
     {
-      isCheck: true,
       img: eno,
       category: "Drum",
       name: "Kursus Drummer Special Coach (Eno Netral)",
       schedule: "Senin, 25 Juli 2022",
     },
     {
-      isCheck: true,
       img: orgMainBiola,
       category: "Biola",
       name: "Biola Mid-Level Course",
       schedule: "Sabtu, 23 Juli 2022",
     },
     {
-      isCheck: false,
       img: orgMainDrum,
       category: "Drum",
       name: "Expert Level Drummer Lessons",
       schedule: "Sabtu, 23 Juli 2022",
     },
     {
-      isCheck: false,
       img: saxophone,
       category: "Saxophone",
       name: "Expert Level Saxophone",
@@ -187,6 +188,7 @@ export const Checkout = () => {
       <PaymentDialog
         open={dialogOpen}
         handleClose={() => setDialogOpen(false)}
+        onSubmit={onSubmit}
       />
     </>
   );

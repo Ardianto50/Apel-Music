@@ -50,7 +50,7 @@ const Navbar = ({ isLoggedIn }) => {
                   gap: 3,
                 }}
               >
-                <Button href="/register" variant="text" sx={{ color: "black" }}>
+                <Button href="/checkout" variant="text" sx={{ color: "black" }}>
                   <ShoppingCartIcon />
                 </Button>
                 <Button
@@ -131,6 +131,9 @@ const Navbar = ({ isLoggedIn }) => {
             </Link>
             <Link to={"/invoice"}>
               <MenuItem>Pembelian</MenuItem>
+            </Link>
+            <Link to={"/checkout"}>
+              <MenuItem>Keranjang</MenuItem>
             </Link>
             <Link to={"/register"}>
               <MenuItem>Menu course</MenuItem>

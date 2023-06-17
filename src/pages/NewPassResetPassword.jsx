@@ -1,8 +1,15 @@
 import React from "react";
 import Navbar from "../assets/components/Navbar";
 import { Button, Grid, Stack, TextField, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export const NewPassResetPassword = () => {
+  const navigate = useNavigate();
+
+  const onResetPasswordSubmit = () => {
+    navigate("/login");
+  };
+
   return (
     <>
       <Navbar />
@@ -58,6 +65,7 @@ export const NewPassResetPassword = () => {
                 borderRadius: 2,
                 minWidth: "10rem",
               }}
+              onClick={onResetPasswordSubmit}
             >
               Kirim
             </Button>

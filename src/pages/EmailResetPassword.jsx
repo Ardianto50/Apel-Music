@@ -1,8 +1,15 @@
 import React from "react";
 import Navbar from "../assets/components/Navbar";
 import { Button, Grid, Stack, TextField, Typography } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 export const EmailResetPassword = () => {
+  const navigate = useNavigate();
+
+  const onResetPassSubmit = () => {
+    navigate("/new-password");
+  };
+
   return (
     <>
       <Navbar />
@@ -50,6 +57,7 @@ export const EmailResetPassword = () => {
               variant="contained"
               color="primary"
               className="rounded-lg"
+              onClick={onResetPassSubmit}
               sx={{
                 borderRadius: 2,
                 minWidth: "10rem",

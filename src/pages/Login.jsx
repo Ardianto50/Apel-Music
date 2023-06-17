@@ -1,9 +1,15 @@
 import { Button, Grid, Stack, TextField, Typography } from "@mui/material";
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../assets/components/Navbar";
 
 export const Login = () => {
+  const navigate = useNavigate();
+
+  const onLoginSubmit = () => {
+    navigate("/");
+  };
+
   return (
     <>
       <Navbar />
@@ -24,6 +30,7 @@ export const Login = () => {
             display: "flex",
             flexDirection: "column",
             justifyContent: "center",
+            marginBottom: "10rem",
           }}
         >
           <Stack direction={"column"} paddingX={5} justifyContent={"center"}>
@@ -65,7 +72,11 @@ export const Login = () => {
                 Lupa kata sandi
               </Typography>
             </Link>
-            <Button variant="contained" sx={{ width: 100 }}>
+            <Button
+              onClick={onLoginSubmit}
+              variant="contained"
+              sx={{ width: 100 }}
+            >
               Masuk
             </Button>
             <Typography paddingTop={3} fontFamily={"poppins"}>

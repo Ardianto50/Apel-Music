@@ -11,6 +11,7 @@ import bannerImage from "../assets/img/banner-drum.png";
 import { blue, grey } from "@mui/material/colors";
 import style from "../assets/css/pages/LandingPage.css";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const MenuCourse = () => {
   const { categoryId } = useParams();
@@ -54,7 +55,10 @@ const MenuCourse = () => {
         component={"img"}
         sx={{
           height: "auto",
+          maxHeight: "400px",
           width: "100%",
+          objectFit: "cover",
+          objectPosition: "center",
         }}
         src={bannerImage}
       ></Box>

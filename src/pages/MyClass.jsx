@@ -36,6 +36,7 @@ export const MyClass = () => {
           paddingY: "3rem",
           minHeight: "80vh",
           marginX: "auto",
+          marginBottom: "5rem",
         }}
       >
         {dummyData.map((data, i) => (
