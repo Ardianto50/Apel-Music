@@ -1,14 +1,14 @@
-import { Button, TextField } from "@mui/material";
-import Navbar from "./assets/components/Navbar";
-import { BrowserRouter, RouterProvider } from "react-router-dom";
-import { router } from "./routes/router";
+import { BrowserRouter } from "react-router-dom";
+import ApiProvider from "./context/ApiProvider";
 import AppRouter from "./routes/AppRouter";
 
 function App() {
   return (
     <>
       <BrowserRouter>
-        <AppRouter />
+        <ApiProvider>
+          <AppRouter />
+        </ApiProvider>
       </BrowserRouter>
     </>
   );

@@ -1,13 +1,60 @@
-import React from "react";
+import React, { useState } from "react";
 import Navbar from "../assets/components/Navbar";
-import { Button, Grid, Stack, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  AlertTitle,
+  Backdrop,
+  Button,
+  CircularProgress,
+  Grid,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useApiContext } from "../context/ApiProvider";
 
 export const EmailResetPassword = () => {
   const navigate = useNavigate();
 
+  const [verifyEmail, setVerifyEmail] = useState(false);
+  const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState({
+    Email: [],
+  });
+
+  const [nonFieldErrors, setNonFieldErrors] = useState(false);
+
+  const { AuthServices } = useApiContext();
+
   const onResetPassSubmit = () => {
-    navigate("/new-password");
+    setIsLoading(true); // Show backdrop loadings
+    setFieldErrors({ Email: [] }); // Membersihkan field error
+    setNonFieldErrors(false);
+
+    AuthServices.requestResetPassword(email)
+      .then((res) => {
+        setVerifyEmail(true);
+        setFieldErrors({ Email: [] });
+      })
+      .catch((err) => {
+        const status = err.response.status;
+        if (status === 400) {
+          const errors = err.response.data.errors;
+          setFieldErrors({ ...fieldErrors, ...errors });
+        }
+
+        if (status > 400 && status < 500) {
+          const errors = err.response.data;
+          setNonFieldErrors(errors);
+        }
+      })
+      .finally(() => {
+        setTimeout(() => {
+          setIsLoading(false); // Hide backdrop loading
+        }, 1000);
+      });
   };
 
   return (
@@ -29,6 +76,18 @@ export const EmailResetPassword = () => {
               Silahkan masukan terlebih dahulu email anda
             </Typography>
           </Stack>
+          {nonFieldErrors && (
+            <Alert severity="error">
+              <AlertTitle>Error</AlertTitle>
+              {nonFieldErrors}
+            </Alert>
+          )}
+          {verifyEmail && (
+            <Alert severity="info">
+              <AlertTitle>Info</AlertTitle>
+              Silahkan cek email anda.
+            </Alert>
+          )}
           <TextField
             required
             fullWidth
@@ -37,6 +96,10 @@ export const EmailResetPassword = () => {
             type="text"
             label={"Masukkan Email"}
             sx={{ marginY: 4 }}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            error={fieldErrors.Email.length !== 0}
+            helperText={fieldErrors.Email[0]}
           />
           <Stack direction={"row"}>
             <Button
@@ -68,6 +131,13 @@ export const EmailResetPassword = () => {
           </Stack>
         </Grid>
       </Grid>
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+        onClick={() => setIsLoading(false)}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 };

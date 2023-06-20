@@ -1,4 +1,5 @@
 import {
+  Box,
   Button,
   Checkbox,
   Divider,
@@ -13,13 +14,19 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
 export const CheckoutList = () => {
   const label = { inputProps: { "aria-label": "Checkbox demo" } };
+
   return (
     <List sx={{ width: "100%" }}>
       <Stack direction="column">
         <Stack direction="row" alignItems="center">
           <Checkbox {...label} defaultChecked />
           <Grid item marginX={4}>
-            <img src={eno} alt="Image" style={{ maxHeight: "150px" }} />
+            <Box
+              component={"img"}
+              src={eno}
+              alt="Image"
+              sx={{ maxHeight: "150px" }}
+            />
           </Grid>
           <Grid item>
             <Typography variant="h7">Drum</Typography>

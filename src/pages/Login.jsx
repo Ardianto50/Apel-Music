@@ -1,14 +1,70 @@
-import { Button, Grid, Stack, TextField, Typography } from "@mui/material";
+import {
+  Alert,
+  AlertTitle,
+  Backdrop,
+  Button,
+  CircularProgress,
+  Grid,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../assets/components/Navbar";
+import { useEffect } from "react";
+import { useState } from "react";
+import { useApiContext } from "../context/ApiProvider";
 
 export const Login = () => {
   const navigate = useNavigate();
 
-  const onLoginSubmit = () => {
-    navigate("/");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState({
+    Email: [],
+    Password: [],
+  });
+
+  const [nonFieldErrors, setNonFieldErrors] = useState(false);
+
+  const { AuthServices } = useApiContext();
+
+  const onLoginSubmit = async () => {
+    setIsLoading(true); // Show backdrop loadings
+    setFieldErrors({ Email: [], Password: [] }); // Membersihkan field error
+    AuthServices.login(email, password)
+      .then((res) => {
+        // console.log(res);
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
+      })
+      .catch((err) => {
+        // console.log(err);
+        const status = err.response.status;
+        if (status === 400) {
+          const errors = err.response.data.errors;
+          setFieldErrors({ ...fieldErrors, ...errors });
+        }
+
+        if (status > 400 && status < 500) {
+          const errors = err.response.data;
+          setNonFieldErrors(errors);
+        }
+      })
+      .finally(() => {
+        setTimeout(() => {
+          setIsLoading(false); // Hide backdrop loading
+        }, 1000);
+      });
   };
+
+  // Untuk ngecek field error
+  // useEffect(() => {
+  //   console.log(fieldErrors);
+  // }, [fieldErrors]);
 
   return (
     <>
@@ -46,6 +102,12 @@ export const Login = () => {
             >
               Login dulu yuk
             </Typography>
+            {nonFieldErrors && (
+              <Alert severity="error">
+                <AlertTitle>Error</AlertTitle>
+                {nonFieldErrors}
+              </Alert>
+            )}
             <TextField
               fullWidth
               size="small"
@@ -53,6 +115,10 @@ export const Login = () => {
               variant="outlined"
               label={"Masulkan Email"}
               sx={{ my: 2 }}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              error={fieldErrors.Email.length !== 0}
+              helperText={fieldErrors.Email[0]}
             ></TextField>
             <TextField
               fullWidth
@@ -61,6 +127,10 @@ export const Login = () => {
               variant="outlined"
               label={"Masukan Password"}
               sx={{ my: 2 }}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              error={fieldErrors.Password.length !== 0}
+              helperText={fieldErrors.Password[0]}
             ></TextField>
             <Link to={"/reset-password"} sx={{ cursor: "pointer", pb: 5 }}>
               <Typography
@@ -95,6 +165,14 @@ export const Login = () => {
           </Stack>
         </Grid>
       </Grid>
+
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+        onClick={() => setIsLoading(false)}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 };

@@ -10,15 +10,26 @@ import {
   Typography,
 } from "@mui/material";
 import { React, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import MenuRoundedIcon from "@mui/icons-material/MenuRounded";
 import PersonIcon from "@mui/icons-material/Person";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import { useApiContext } from "../../context/ApiProvider";
+import { useEffect } from "react";
+import AlertDialog from "./dialogs/AlertDialog";
 
-const Navbar = ({ isLoggedIn }) => {
+const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+  const [alreadyLogin, setAlreadyLogin] = useState(false);
+
+  const { AuthServices } = useApiContext();
+
+  useEffect(() => {
+    const result = AuthServices.isLoggedIn();
+    setAlreadyLogin(result);
+  }, [AuthServices]);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -28,11 +39,23 @@ const Navbar = ({ isLoggedIn }) => {
     setAnchorEl(null);
   };
 
+  const [confirmLogout, setConfirmLogout] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    navigate("/logout");
+  };
+
+  const handleConfirm = () => {
+    setConfirmLogout(true);
+  };
+
   // Menu navbar untuk screen size md-xl
   const ComponentMenuPC = () => {
     return (
       <>
-        {isLoggedIn ? (
+        {alreadyLogin ? (
           <>
             <Box
               sx={{
@@ -93,7 +116,11 @@ const Navbar = ({ isLoggedIn }) => {
                 <Button href="/register" variant="text" sx={{ color: "black" }}>
                   <PersonIcon fontSize={"medium"} />
                 </Button>
-                <Button href="/login" variant="text" sx={{ color: "black" }}>
+                <Button
+                  onClick={handleConfirm}
+                  variant="text"
+                  sx={{ color: "black" }}
+                >
                   <LogoutIcon fontSize={"medium"} />
                 </Button>
               </Box>
@@ -118,12 +145,17 @@ const Navbar = ({ isLoggedIn }) => {
   const ComponentMenuMobile = () => {
     return (
       <>
-        {isLoggedIn ? (
+        {alreadyLogin ? (
           <>
             <Link to={"/login"}>
               <MenuItem>Profil</MenuItem>
             </Link>
-            <Link to={"/register"}>
+            <Link
+              onClick={(e) => {
+                e.preventDefault();
+                handleConfirm();
+              }}
+            >
               <MenuItem>Logout</MenuItem>
             </Link>
             <Link to={"/my-class"}>
@@ -154,96 +186,104 @@ const Navbar = ({ isLoggedIn }) => {
   };
 
   return (
-    <AppBar
-      position="relative"
-      className="py-3 px-5 font-poppins"
-      sx={{ bgcolor: "#F2C94C", color: "#000000" }}
-    >
-      <Stack
-        direction={"row"}
-        alignItems={"center"}
-        justifyContent={"space-between"}
-        padding={"10px 20px"}
+    <>
+      <AlertDialog
+        open={confirmLogout}
+        handleClose={() => setConfirmLogout(false)}
+        title={"Logout"}
+        text={""}
+        onSubmit={handleLogout}
+      />
+      <AppBar
+        position="relative"
+        className="py-3 px-5 font-poppins"
+        sx={{ bgcolor: "#F2C94C", color: "#000000" }}
       >
-        {/* Logo */}
-        <Link to={"/"} style={{ display: "flex" }}>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              marginLeft: 3,
-            }}
-          >
-            <AppleIcon
-              sx={{
-                display: "flex",
-                alignItems: "end",
-                pt: 0.2,
-              }}
-            />
-            <Typography
-              variant="h6"
-              noWrap
-              sx={{
-                mr: 2,
-                display: "flex",
-                alignItems: "baseline",
-                fontWeight: 700,
-                color: "inherit",
-                textDecoration: "none",
-                textTransform: "capitalize",
-                lineHeight: "1rem",
-              }}
-            >
-              MUSIC
-            </Typography>
-          </Box>
-        </Link>
-        {/* End Logo */}
-
-        {/* Menu Navbar */}
         <Stack
           direction={"row"}
-          gap={5}
-          sx={{ display: { md: "flex", xs: "none" } }}
+          alignItems={"center"}
+          justifyContent={"space-between"}
+          padding={"10px 20px"}
         >
-          <ComponentMenuPC />
-        </Stack>
-        <Box
-          item
-          xs={6}
-          sx={{
-            display: { md: "none", xs: "flex" },
-            justifyContent: "end",
-          }}
-        >
-          <Box sx={{ flexGrow: 0 }}>
-            <Tooltip title="Menu" onClick={handleClick}>
-              <MenuRoundedIcon></MenuRoundedIcon>
-            </Tooltip>
-            <Menu
-              id="demo-positioned-menu"
-              aria-labelledby="demo-positioned-button"
-              anchorEl={anchorEl}
-              open={open}
-              onClose={handleClose}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "left",
-              }}
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
+          {/* Logo */}
+          <Link to={"/"} style={{ display: "flex" }}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginLeft: 3,
               }}
             >
-              <ComponentMenuMobile />
-            </Menu>
+              <AppleIcon
+                sx={{
+                  display: "flex",
+                  alignItems: "end",
+                  pt: 0.2,
+                }}
+              />
+              <Typography
+                variant="h6"
+                noWrap
+                sx={{
+                  mr: 2,
+                  display: "flex",
+                  alignItems: "baseline",
+                  fontWeight: 700,
+                  color: "inherit",
+                  textDecoration: "none",
+                  textTransform: "capitalize",
+                  lineHeight: "1rem",
+                }}
+              >
+                MUSIC
+              </Typography>
+            </Box>
+          </Link>
+          {/* End Logo */}
+
+          {/* Menu Navbar */}
+          <Stack
+            direction={"row"}
+            gap={5}
+            sx={{ display: { md: "flex", xs: "none" } }}
+          >
+            <ComponentMenuPC />
+          </Stack>
+          <Box
+            xs={6}
+            sx={{
+              display: { md: "none", xs: "flex" },
+              justifyContent: "end",
+            }}
+          >
+            <Box sx={{ flexGrow: 0 }}>
+              <Tooltip title="Menu" onClick={handleClick}>
+                <MenuRoundedIcon></MenuRoundedIcon>
+              </Tooltip>
+              <Menu
+                id="demo-positioned-menu"
+                aria-labelledby="demo-positioned-button"
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleClose}
+                anchorOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+              >
+                <ComponentMenuMobile />
+              </Menu>
+            </Box>
           </Box>
-        </Box>
-        {/* End Menu Navbar */}
-      </Stack>
-    </AppBar>
+          {/* End Menu Navbar */}
+        </Stack>
+      </AppBar>
+    </>
   );
 };
 

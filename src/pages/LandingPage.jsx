@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Navbar from "../assets/components/Navbar";
 import { Box, CardMedia, Stack, Typography } from "@mui/material";
 import AdCard from "../assets/components/landing_page/AdCard";
@@ -109,7 +109,7 @@ const LandingPage = () => {
   return (
     <>
       {/* Navbar */}
-      <Navbar isLoggedIn={false} />
+      <Navbar />
       {/* End Navbar */}
 
       {/* Banner */}
