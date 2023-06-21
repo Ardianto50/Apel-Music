@@ -7,8 +7,12 @@ import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { Link } from "react-router-dom";
 import { rupiah } from "../../utility/formatIDR";
+import { useApiContext } from "../../context/ApiProvider";
 
 const CourseCard = ({ secureId, image, kategori, judul, harga }) => {
+  const { URLs } = useApiContext();
+
+
   return (
     <Link to={"/course-details/" + secureId}>
       <Card
@@ -22,7 +26,7 @@ const CourseCard = ({ secureId, image, kategori, judul, harga }) => {
       >
         <CardMedia
           sx={{ height: { xs: 230, sm: 230, md: 240 }, borderRadius: "16px" }}
-          image={image}
+          image={URLs.IMG_URL + image}
           title={judul}
         />
         <CardContent>

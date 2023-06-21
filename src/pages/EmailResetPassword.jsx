@@ -37,6 +37,7 @@ export const EmailResetPassword = () => {
       .then((res) => {
         setVerifyEmail(true);
         setFieldErrors({ Email: [] });
+        setEmail("");
       })
       .catch((err) => {
         const status = err.response.status;

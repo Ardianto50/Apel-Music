@@ -13,6 +13,7 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Navbar from "../assets/components/Navbar";
 import { useApiContext } from "../context/ApiProvider";
+import CustomPassword from "../assets/components/inputs/CustomPassword";
 
 export const Register = () => {
   const navigate = useNavigate();
@@ -123,7 +124,7 @@ export const Register = () => {
             {verifyEmail && (
               <Alert severity="info">
                 <AlertTitle>Info</AlertTitle>
-                Silahkan cek email anda lalu, lakukan login.
+                Silahkan cek email anda, untuk melakukan verifikasi.
               </Alert>
             )}
             <TextField
@@ -152,7 +153,7 @@ export const Register = () => {
               error={fieldErrors.Email.length !== 0}
               helperText={fieldErrors.Email[0]}
             />
-            <TextField
+            <CustomPassword
               fullWidth
               required
               size="small"
@@ -165,7 +166,7 @@ export const Register = () => {
               error={fieldErrors.Password.length !== 0}
               helperText={fieldErrors.Password[0]}
             />
-            <TextField
+            <CustomPassword
               fullWidth
               required
               size="small"

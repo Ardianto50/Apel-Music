@@ -14,6 +14,7 @@ import {
 import { useNavigate, useParams } from "react-router-dom";
 import { useApiContext } from "../context/ApiProvider";
 import { Password } from "@mui/icons-material";
+import CustomPassword from "../assets/components/inputs/CustomPassword";
 
 export const NewPassResetPassword = () => {
   const navigate = useNavigate();
@@ -83,7 +84,7 @@ export const NewPassResetPassword = () => {
               {nonFieldErrors}
             </Alert>
           )}
-          <TextField
+          <CustomPassword
             fullWidth
             required
             size="medium"
@@ -95,12 +96,12 @@ export const NewPassResetPassword = () => {
             error={fieldErrors.Password.length !== 0}
             helperText={fieldErrors.Password[0]}
           />
-          <TextField
+          <CustomPassword
             fullWidth
             required
             size="medium"
             variant="outlined"
-            type="text"
+            type="password"
             label={"Konfirmasi Password Baru"}
             sx={{ marginY: 4 }}
             value={confirmPassword}

@@ -1,7 +1,10 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useApiContext } from "../../../context/ApiProvider";
 
 const KategoriCard = ({ image, nama, link }) => {
+  const { URLs } = useApiContext();
+
   return (
     <Link to={link}>
       <div
@@ -15,7 +18,7 @@ const KategoriCard = ({ image, nama, link }) => {
           margin: "auto",
         }}
       >
-        <img src={image} alt={nama} />
+        <img src={URLs.IMG_URL + image} alt={nama} />
         <span
           style={{
             display: "block",

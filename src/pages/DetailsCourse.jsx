@@ -20,6 +20,8 @@ import MenuItem from "@mui/material/MenuItem";
 import { blue } from "@mui/material/colors";
 import CourseCard from "../assets/components/CourseCard";
 import Footer from "../assets/components/Footer";
+import { useApiContext } from "../context/ApiProvider";
+import { formatDate } from "../utility/dateFormat";
 
 const DetailsCourse = () => {
   const { courseId } = useParams();
@@ -29,32 +31,94 @@ const DetailsCourse = () => {
   }, []);
 
   const [jadwal, setJadwal] = useState("");
-  const [optionsJadwal, setOptionJadwal] = useState([]);
 
-  const [dummyClass, setDummyClass] = useState([
+  const [courses, setCourses] = useState([
     {
-      image: expertDrumClass,
-      judul: "Expert Level Drummer Lessons",
-      kategori: "Drum",
-      harga: 5_450_000,
-    },
-    {
-      image: progressiveDrumClass,
-      judul: "From zero to Profesional Drumer (Complit Package)",
-      kategori: "Drum",
-      harga: 13_000_000,
-    },
-    {
-      image: orangMainDrum,
-      judul: "Drummer for kids (Level Basic/1)",
-      kategori: "Drum",
-      harga: 2_200_000,
+      id: "",
+      imageName: "",
+      name: "",
+      price: 0,
+      category: {
+        id: "",
+        tagName: "",
+      },
     },
   ]);
 
+  const [mainCourse, setMainCourse] = useState({
+    id: "",
+    name: "",
+    categoryId: "",
+    category: {
+      tagName: "",
+      name: "",
+      image: "",
+      bannerImage: "",
+      categoryDescription: "",
+      id: "",
+    },
+    image: "",
+    description: "",
+    price: 0,
+    courseSchedules: [
+      {
+        courseId: "",
+        courseDate: "",
+        id: "",
+        createdAt: null,
+        updatedAt: null,
+        inactive: null,
+      },
+    ],
+  });
+
+  const [pageSize, setPageSize] = useState(6);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const { AppServices, URLs } = useApiContext();
+
+  useEffect(() => {
+    setCourses([]);
+    AppServices.getCourseDetail(courseId)
+      .then((res) => {
+        let result = res.data;
+        setMainCourse(result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    let params = {
+      PageSize: pageSize,
+      CurrentPage: currentPage,
+    };
+
+    AppServices.getSimiliarCourses(params, courseId, mainCourse.categoryId)
+      .then((res) => {
+        let result = res.data;
+        console.log(result);
+        setCourses(result.items);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [AppServices, pageSize, currentPage, courseId, mainCourse.categoryId]);
+
+  const goLeft = () => {
+    if (currentPage !== 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const goRight = () => {
+    if (courses.length === pageSize) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
   return (
     <>
-      <Navbar isLoggedIn={true} />
+      <Navbar />
       <Box
         sx={{
           width: "100%",
@@ -75,7 +139,7 @@ const DetailsCourse = () => {
         >
           <Box
             component={"img"}
-            src={enoNetral}
+            src={URLs.IMG_URL + mainCourse.image}
             sx={{
               borderRadius: "1rem",
               width: "400px",
@@ -105,14 +169,14 @@ const DetailsCourse = () => {
                 fontWeight={400}
                 color={"#828282"}
               >
-                Drum
+                {mainCourse.category.name}
               </Typography>
               <Typography
                 fontSize={"1.5rem"}
                 lineHeight={"2rem"}
                 fontWeight={600}
               >
-                Kursus Drummer Special Coach (Eno Netral)
+                {mainCourse.name}
               </Typography>
               <Typography
                 fontSize={"1.5rem"}
@@ -120,7 +184,7 @@ const DetailsCourse = () => {
                 fontWeight={600}
                 color={"#5D5FEF"}
               >
-                {rupiah(8_500_000)}
+                {rupiah(mainCourse.price)}
               </Typography>
             </Box>
             {/* End Section (Category, Title, Price) */}
@@ -139,11 +203,11 @@ const DetailsCourse = () => {
                   onChange={(e) => setJadwal(e.target.value)}
                 >
                   <MenuItem value={10}>Senin, 25 Juli 2022</MenuItem>
-                  <MenuItem value={20}>Selasa, 26 Juli 2022</MenuItem>
-                  <MenuItem value={30}>Rabu, 27 Juli 2022</MenuItem>
-                  <MenuItem value={30}>Kamis, 28 Juli 2022</MenuItem>
-                  <MenuItem value={30}>Jumat, 29 Juli 2022</MenuItem>
-                  <MenuItem value={30}>Sabtu, 30 Juli 2022</MenuItem>
+                  {mainCourse.courseSchedules.map((val, i) => (
+                    <MenuItem key={i} value={val.courseDate}>
+                      {formatDate(val.courseDate)}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Box>
@@ -199,22 +263,7 @@ const DetailsCourse = () => {
             Deskripsi
           </Typography>
           <Typography fontSize={"1rem"} lineHeight={"1.5rem"} fontWeight={400}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
-          </Typography>
-          <Typography fontSize={"1rem"} lineHeight={"1.5rem"} fontWeight={400}>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim
-            ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.
+            {mainCourse.description}
           </Typography>
         </Box>
       </Box>
@@ -252,8 +301,15 @@ const DetailsCourse = () => {
             maxWidth: "1200px",
           }}
         >
-          {dummyClass.map((course, i) => (
-            <CourseCard key={i} {...course} />
+          {courses.map((course, i) => (
+            <CourseCard
+              key={i}
+              secureId={course.id}
+              judul={course.name}
+              image={course.imageName}
+              harga={course.price}
+              kategori={course.category.tagName}
+            />
           ))}
         </Box>
       </Box>

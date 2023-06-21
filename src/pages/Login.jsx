@@ -15,6 +15,7 @@ import Navbar from "../assets/components/Navbar";
 import { useEffect } from "react";
 import { useState } from "react";
 import { useApiContext } from "../context/ApiProvider";
+import CustomPassword from "../assets/components/inputs/CustomPassword";
 
 export const Login = () => {
   const navigate = useNavigate();
@@ -120,7 +121,7 @@ export const Login = () => {
               error={fieldErrors.Email.length !== 0}
               helperText={fieldErrors.Email[0]}
             ></TextField>
-            <TextField
+            <CustomPassword
               fullWidth
               size="small"
               type="password"
@@ -131,7 +132,7 @@ export const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               error={fieldErrors.Password.length !== 0}
               helperText={fieldErrors.Password[0]}
-            ></TextField>
+            ></CustomPassword>
             <Link to={"/reset-password"} sx={{ cursor: "pointer", pb: 5 }}>
               <Typography
                 color={"black"}

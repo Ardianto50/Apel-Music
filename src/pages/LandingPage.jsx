@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
 import Navbar from "../assets/components/Navbar";
-import { Box, CardMedia, Stack, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CardMedia,
+  Pagination,
+  Stack,
+  Typography,
+} from "@mui/material";
 import AdCard from "../assets/components/landing_page/AdCard";
 import Footer from "../assets/components/Footer";
 import CourseCard from "../assets/components/CourseCard";
-import enoNetral from "../assets/img/eno-netral.png";
-import orangMainGitar from "../assets/img/orang-main-gitar.png";
-import orangMainBiola from "../assets/img/orang-main-biola.png";
-import orangMainDrum from "../assets/img/orang-main-drum.png";
-import piano from "../assets/img/piano.png";
-import saxophone from "../assets/img/saxophone.png";
 import drum from "../assets/img/drum.png";
 import orangMainPiano from "../assets/img/orang-main-piano.png";
 import gitar from "../assets/img/gitar.png";
@@ -22,89 +23,80 @@ import bannerImage from "../assets/img/party-silhouette.jpg";
 import { blue, grey } from "@mui/material/colors";
 import style from "../assets/css/pages/LandingPage.css";
 import { v4 as uuidv4 } from "uuid";
+import { useApiContext } from "../context/ApiProvider";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 const LandingPage = () => {
-  const [dummyClass, setDummyClass] = useState([
+  const [courses, setCourses] = useState([
     {
-      image: enoNetral,
-      judul: "kursus Drummer Special Coach (Eno Netral)",
-      kategori: "Drum",
-      harga: 8_500_000,
-    },
-    {
-      image: orangMainGitar,
-      judul: "[Beginner] Guitar class for kids",
-      kategori: "Gitar",
-      harga: 1_600_000,
-    },
-    {
-      image: orangMainBiola,
-      judul: "Biola Mid-Level Course",
-      kategori: "Biola",
-      harga: 3_000_000,
-    },
-    {
-      image: orangMainDrum,
-      judul: "Drummer for kids (Level Basic/1)",
-      kategori: "Drum",
-      harga: 2_200_000,
-    },
-    {
-      image: piano,
-      judul: "Kursus Piano: From Zero to Pro (Full Package)",
-      kategori: "Piano",
-      harga: 11_650_000,
-    },
-    {
-      image: saxophone,
-      judul: "Expert Level Saxophone",
-      kategori: "Saxophone",
-      harga: 7_350_000,
+      id: "",
+      imageName: "",
+      name: "",
+      price: 0,
+      category: {
+        id: "",
+        tagName: "",
+      },
     },
   ]);
 
-  const dummyCategory = [
+  const [categories, setCategories] = useState([
     {
-      image: drum,
-      nama: "Drum",
-      link: "/course-menu/drum",
+      id: "",
+      tagName: "",
+      name: "",
+      image: "",
+      bannerImage: "",
+      categoryDescription: "",
     },
-    {
-      image: orangMainPiano,
-      nama: "Piano",
-      link: "/course-menu/piano",
-    },
-    {
-      image: gitar,
-      nama: "Gitar",
-      link: "/course-menu/gitar",
-    },
-    {
-      image: gitar,
-      nama: "Bass",
-      link: "/course-menu/bass",
-    },
-    {
-      image: biola,
-      nama: "Biola",
-      link: "/course-menu/biola",
-    },
-    {
-      image: vokal,
-      nama: "Menyanyi",
-      link: "/course-menu/vokal",
-    },
-    {
-      image: orangMainSax,
-      nama: "Flute",
-      link: "/course-menu/flute",
-    },
-    {
-      image: orangMainSax,
-      nama: "Saxophone",
-      link: "/course-menu/saxophone",
-    },
-  ];
+  ]);
+
+  const [pageSize, setPageSize] = useState(6);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const { AppServices } = useApiContext();
+
+  useEffect(() => {
+    let params = {
+      PageSize: pageSize,
+      CurrentPage: currentPage,
+    };
+    AppServices.getAllCourses(params)
+      .then((res) => {
+        // console.log(res.data);
+        let result = res.data;
+        setCourses(result.items);
+      })
+      .catch((err) => {
+        let response = err.response;
+        if (response.status === 404) setCurrentPage(1);
+      });
+
+    AppServices.getAllCategories()
+      .then((res) => {
+        // console.log(res.data);
+        let result = res.data;
+        setCategories(result);
+      })
+      .catch((err) => {
+        let response = err.response;
+        // if (response.status === 404) setCurrentPage(1);
+        console.log(response);
+      });
+  }, [AppServices, pageSize, currentPage]);
+
+  const goLeft = () => {
+    if (currentPage !== 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const goRight = () => {
+    if (courses.length === pageSize) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   return (
     <>
@@ -214,9 +206,32 @@ const LandingPage = () => {
             maxWidth: "1200px",
           }}
         >
-          {dummyClass.map((course, i) => (
-            <CourseCard key={i} {...course} secureId={uuidv4()} />
+          {courses.map((course, i) => (
+            <CourseCard
+              key={i}
+              secureId={course.id}
+              judul={course.name}
+              image={course.imageName}
+              harga={course.price}
+              kategori={course.category.tagName}
+            />
           ))}
+        </Box>
+        <Box
+          sx={{
+            width: "200px",
+            display: "flex",
+            justifyContent: "space-evenly",
+            height: "50px",
+            margin: "auto",
+          }}
+        >
+          <Button variant="outlined" onClick={goLeft}>
+            <ChevronLeftIcon />
+          </Button>
+          <Button variant="outlined" onClick={goRight}>
+            <ChevronRightIcon />
+          </Button>
         </Box>
       </Box>
       {/* End Course List */}
@@ -263,8 +278,8 @@ const LandingPage = () => {
             maxWidth: "1200px",
           }}
         >
-          {dummyCategory.map((c, i) => (
-            <KategoriCard key={i} {...c} />
+          {categories.map((c, i) => (
+            <KategoriCard key={i} image={c.image} nama={c.tagName} link="/" />
           ))}
         </Box>
       </Box>

@@ -5,12 +5,21 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 const ApiContext = createContext();
 
 const ApiProvider = ({ children }) => {
-  const baseUrl = process.env.REACT_APP_BACKEND_API_URL;
+  const baseUrl = process.env.REACT_APP_BACKEND_API_URL + "api/";
 
   const URLs = {
     BASE_URL: baseUrl,
-    IMG_URL: baseUrl + "api/Image/",
-    AUTH_URL: baseUrl + "api/Auth/",
+    IMG_URL: baseUrl + "Image/",
+    AUTH_URL: baseUrl + "Auth/",
+  };
+  // ================ UTILITY===============
+  const getAxiosConfig = () => {
+    let token = "Bearer " + localStorage.getItem("jwt_token");
+    const config = {
+      header: { Authorization: token },
+    };
+
+    return config;
   };
 
   // ================ AUTH SERVICE =======================
@@ -142,13 +151,88 @@ const ApiProvider = ({ children }) => {
     resetPassword,
   };
 
-  // ================ APP SERVICE =======================
-  const getAllCourse = () => {
-    
-  }
+  // ================= APP SERVICE =======================
+
+  const getCategoryDetail = async (id) => {
+    return await axios.get(URLs.BASE_URL + "Category/FindById/" + id);
+  };
+
+  const getCourseByCategory = async (id) => {
+    return await axios.get(URLs.BASE_URL + "Course/GroupByCategory/" + id);
+  };
+
+  const getCourseDetail = async (id) => {
+    axios.defaults.headers.common = getAxiosConfig();
+    return await axios.get(URLs.BASE_URL + "Course/" + id);
+  };
+
+  const getSimiliarCourses = async (params, id, categoryId) => {
+    let PageSize = params?.PageSize || 5;
+    let CurrentPage = params?.CurrentPage || 1;
+    let Direction = params?.Direction || "ASC";
+    let SortBy = params?.SortBy || "";
+    let Keyword = params?.Keyword || "";
+    const finalParam = {
+      PageSize,
+      CurrentPage,
+      Direction,
+      SortBy,
+      Keyword,
+      exceptedCourseId: id,
+    };
+
+    return await axios.get(
+      URLs.BASE_URL + "Course/GroupByCategory/" + categoryId,
+      {
+        params: finalParam,
+      }
+    );
+  };
+
+  const getAllCategories = async () => {
+    const response = await axios.get(URLs.BASE_URL + "Category/GetAll");
+    try {
+      return response;
+    } catch (err) {
+      return err.response;
+    }
+  };
+
+  const getAllCourses = async (params) => {
+    let PageSize = params?.PageSize || 5;
+    let CurrentPage = params?.CurrentPage || 1;
+    let Direction = params?.Direction || "ASC";
+    let SortBy = params?.SortBy || "";
+    let Keyword = params?.Keyword || "";
+    const finalParam = {
+      PageSize,
+      CurrentPage,
+      Direction,
+      SortBy,
+      Keyword,
+    };
+    console.log(axios.defaults.headers.common["Authorization"]);
+    const response = await axios.get(URLs.BASE_URL + "Course", {
+      params: finalParam,
+    });
+    try {
+      return response;
+    } catch (err) {
+      return err.response;
+    }
+  };
+
+  const AppServices = {
+    getAllCourses,
+    getAllCategories,
+    getCategoryDetail,
+    getCourseByCategory,
+    getCourseDetail,
+    getSimiliarCourses,
+  };
 
   return (
-    <ApiContext.Provider value={{ URLs, AuthServices }}>
+    <ApiContext.Provider value={{ URLs, AuthServices, AppServices }}>
       {children}
     </ApiContext.Provider>
   );
