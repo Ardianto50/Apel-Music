@@ -1,8 +1,10 @@
 import React from "react";
 import eno from "../../img/eno-netral.png";
 import { Box, Typography } from "@mui/material";
+import { rupiah } from "../../../utility/formatIDR";
 
-export const ListClass = ({ img, category, name, schedule }) => {
+export const ListClass = ({ img, category, name, schedule, price }) => {
+
   return (
     <>
       <Box
@@ -49,14 +51,36 @@ export const ListClass = ({ img, category, name, schedule }) => {
           >
             {name}
           </Typography>
-          <Typography
-            color={"#5D5FEF"}
-            fontWeight={400}
-            fontSize={"1.25rem"}
-            lineHeight={"1.875rem"}
-          >
-            {schedule}
-          </Typography>
+
+          {price ? (
+            <>
+              <Typography
+                color={"black"}
+                fontWeight={400}
+                fontSize={"1.25rem"}
+                lineHeight={"1.875rem"}
+              >
+                {schedule}
+              </Typography>
+              <Typography
+                color={"#5D5FEF"}
+                fontWeight={600}
+                fontSize={"1.25rem"}
+                lineHeight={"1.875rem"}
+              >
+                {rupiah(price)}
+              </Typography>
+            </>
+          ) : (
+            <Typography
+              color={"#5D5FEF"}
+              fontWeight={400}
+              fontSize={"1.25rem"}
+              lineHeight={"1.875rem"}
+            >
+              {schedule}
+            </Typography>
+          )}
         </Box>
       </Box>
     </>

@@ -2,11 +2,11 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useApiContext } from "../../../context/ApiProvider";
 
-const KategoriCard = ({ image, nama, link }) => {
+const KategoriCard = ({ id, image, nama }) => {
   const { URLs } = useApiContext();
 
   return (
-    <Link to={link}>
+    <Link to={"/course-menu/" + id}>
       <div
         style={{
           display: "flex",

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Route, Routes, useNavigate } from "react-router-dom";
 import LandingPage from "../pages/LandingPage";
 import { Login } from "../pages/Login";
@@ -18,6 +18,14 @@ import ProtectedRoutes from "./ProtectedRoutes";
 import Logout from "../pages/Logout";
 import { useEffect } from "react";
 import { useApiContext } from "../context/ApiProvider";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from "@mui/material";
 
 const AuthElement = ({ children }) => {
   const navigate = useNavigate();
@@ -57,6 +65,14 @@ const protectedComp = (element) => {
 };
 
 const AppRouter = () => {
+  const { GlobalDialogUtil, AuthServices } = useApiContext();
+
+  useState(() => {
+    AuthServices.checkSession();
+  }, [GlobalDialogUtil, AuthServices]);
+
+  const handleCloseGlobalDialog = () => GlobalDialogUtil.setGlobalDialog(false);
+
   return (
     <>
       <Routes>
@@ -95,6 +111,26 @@ const AppRouter = () => {
         />
         {/* END: Protected Route */}
       </Routes>
+      <Dialog
+        open={GlobalDialogUtil.globalDialog}
+        onClose={handleCloseGlobalDialog}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">
+          {"Session Telah Berakhir"}
+        </DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Silahkan login kembali, untuk menikmati layanan kami.
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseGlobalDialog} autoFocus>
+            Oke
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

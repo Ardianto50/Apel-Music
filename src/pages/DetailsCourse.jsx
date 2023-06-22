@@ -9,7 +9,7 @@ import {
   Select,
   Typography,
 } from "@mui/material";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import enoNetral from "../assets/img/eno-netral.png";
 import expertDrumClass from "../assets/img/expert-level-drum-class.png";
 import progressiveDrumClass from "../assets/img/progressive-drum-class.png";
@@ -25,12 +25,13 @@ import { formatDate } from "../utility/dateFormat";
 
 const DetailsCourse = () => {
   const { courseId } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0); // sewaktu page dibuka, langsung scroll ke atas
   }, []);
 
-  const [jadwal, setJadwal] = useState("");
+  const [courseSchedule, setCourseSchedule] = useState("");
 
   const [courses, setCourses] = useState([
     {
@@ -105,15 +106,32 @@ const DetailsCourse = () => {
   }, [AppServices, pageSize, currentPage, courseId, mainCourse.categoryId]);
 
   const goLeft = () => {
+    // Pindah ke halaman selanjutnya
     if (currentPage !== 1) {
       setCurrentPage(currentPage - 1);
     }
   };
 
   const goRight = () => {
+    // Pindah ke halaman sebelumnya
     if (courses.length === pageSize) {
       setCurrentPage(currentPage + 1);
     }
+  };
+
+  const handleAddToCart = () => {
+    // const cartPayload = {
+    //   courseId,
+    //   courseSchedule,
+    // };
+    AppServices.addToCart(courseId, courseSchedule)
+      .then((res) => {
+        console.log(res);
+        navigate("/checkout");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -198,11 +216,10 @@ const DetailsCourse = () => {
                 <Select
                   labelId="demo-simple-select-label"
                   id="demo-simple-select"
-                  value={jadwal}
+                  value={courseSchedule}
                   label="Pilih Jadwal Kelas"
-                  onChange={(e) => setJadwal(e.target.value)}
+                  onChange={(e) => setCourseSchedule(e.target.value)}
                 >
-                  <MenuItem value={10}>Senin, 25 Juli 2022</MenuItem>
                   {mainCourse.courseSchedules.map((val, i) => (
                     <MenuItem key={i} value={val.courseDate}>
                       {formatDate(val.courseDate)}
@@ -228,8 +245,7 @@ const DetailsCourse = () => {
                   textAlign: "center",
                 }}
                 variant="outlined"
-                component={"a"}
-                href={"/checkout"}
+                onClick={handleAddToCart}
               >
                 Masukkan ke keranjang
               </Button>

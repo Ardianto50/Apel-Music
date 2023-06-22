@@ -1,11 +1,22 @@
-import { Try } from "@mui/icons-material";
 import axios from "axios";
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const ApiContext = createContext();
 
 const ApiProvider = ({ children }) => {
   const baseUrl = process.env.REACT_APP_BACKEND_API_URL + "api/";
+
+  const [globalDialog, setGlobalDialog] = useState(false);
+  const [globalDialogMsg, setGlobalDialogMsg] = useState("");
+
+  const GlobalDialogUtil = {
+    globalDialog,
+    setGlobalDialog,
+    globalDialogMsg,
+  };
+
+  const navigate = useNavigate();
 
   const URLs = {
     BASE_URL: baseUrl,
@@ -13,16 +24,26 @@ const ApiProvider = ({ children }) => {
     AUTH_URL: baseUrl + "Auth/",
   };
   // ================ UTILITY===============
-  const getAxiosConfig = () => {
+  const getAuthorization = () => {
     let token = "Bearer " + localStorage.getItem("jwt_token");
-    const config = {
-      header: { Authorization: token },
+    return {
+      Authorization: token,
     };
-
-    return config;
   };
 
   // ================ AUTH SERVICE =======================
+
+  const checkSession = async () => {
+    console.log("checkSession");
+    if (localStorage.getItem("jwt_token")) {
+      axios.defaults.headers.common = getAuthorization();
+      axios.get(URLs.AUTH_URL + "CheckSession").catch((err) => {
+        setGlobalDialog(true);
+        setGlobalDialogMsg("Session anda telah berakhir");
+        navigate("/logout");
+      });
+    }
+  };
 
   const resetPassword = async (token, password, confirmPassword) => {
     const resetPayload = {
@@ -149,20 +170,92 @@ const ApiProvider = ({ children }) => {
     register,
     requestResetPassword,
     resetPassword,
+    checkSession,
   };
 
   // ================= APP SERVICE =======================
 
+  const getInvoiceDetail = async (invoiceId) => {
+    axios.defaults.headers.common = getAuthorization();
+    return await axios.get(
+      URLs.BASE_URL + "Purchase/Invoice/Detail/" + invoiceId
+    );
+  };
+
+  const getUserInvoice = async (params) => {
+    let PageSize = params?.PageSize || 5;
+    let CurrentPage = params?.CurrentPage || 1;
+    let Direction = params?.Direction || "ASC";
+    let SortBy = params?.SortBy || "";
+    let Keyword = params?.Keyword || "";
+    const finalParam = {
+      PageSize,
+      CurrentPage,
+      Direction,
+      SortBy,
+      Keyword,
+    };
+
+    axios.defaults.headers.common = getAuthorization();
+
+    return await axios.get(URLs.BASE_URL + "Purchase/Invoice/User", {
+      params: finalParam,
+    });
+  };
+
+  const directPurchase = async (paymentMethodId, courseSchedule, courseId) => {
+    axios.defaults.headers.common = getAuthorization();
+    return await axios.post(URLs.BASE_URL + "Purchase/Direct", {
+      paymentMethodId,
+      courseSchedule,
+      courseId,
+    });
+  };
+
+  const checkout = async (paymentMethodId, purchaseDate, shoppingCartIds) => {
+    axios.defaults.headers.common = getAuthorization();
+    return await axios.post(URLs.BASE_URL + "Purchase", {
+      paymentMethodId,
+      purchaseDate,
+      shoppingCartIds,
+    });
+  };
+
+  const getPaymentMethods = async () => {
+    axios.defaults.headers.common = getAuthorization();
+    return await axios.get(URLs.BASE_URL + "Payment/ForUser");
+  };
+
+  const addToCart = async (courseId, courseSchedule) => {
+    axios.defaults.headers.common = getAuthorization();
+    return await axios.post(URLs.BASE_URL + "ShoppingCart", {
+      courseId,
+      courseSchedule,
+    });
+  };
+
+  const deleteCart = async (cartIds) => {
+    axios.defaults.headers.common = getAuthorization();
+    return await axios.delete(URLs.BASE_URL + "ShoppingCart", cartIds);
+  };
+
+  const getCarts = async () => {
+    axios.defaults.headers.common = getAuthorization();
+    return await axios.get(URLs.BASE_URL + "ShoppingCart");
+  };
+
   const getCategoryDetail = async (id) => {
+    axios.defaults.headers.common = getAuthorization();
     return await axios.get(URLs.BASE_URL + "Category/FindById/" + id);
   };
 
   const getCourseByCategory = async (id) => {
+    axios.defaults.headers.common = getAuthorization();
     return await axios.get(URLs.BASE_URL + "Course/GroupByCategory/" + id);
   };
 
   const getCourseDetail = async (id) => {
-    axios.defaults.headers.common = getAxiosConfig();
+    axios.defaults.headers.common = getAuthorization();
     return await axios.get(URLs.BASE_URL + "Course/" + id);
   };
 
@@ -181,6 +274,8 @@ const ApiProvider = ({ children }) => {
       exceptedCourseId: id,
     };
 
+    axios.defaults.headers.common = getAuthorization();
+
     return await axios.get(
       URLs.BASE_URL + "Course/GroupByCategory/" + categoryId,
       {
@@ -197,7 +292,7 @@ const ApiProvider = ({ children }) => {
       return err.response;
     }
   };
-
+  axios.defaults.headers.common = getAuthorization();
   const getAllCourses = async (params) => {
     let PageSize = params?.PageSize || 5;
     let CurrentPage = params?.CurrentPage || 1;
@@ -229,10 +324,20 @@ const ApiProvider = ({ children }) => {
     getCourseByCategory,
     getCourseDetail,
     getSimiliarCourses,
+    addToCart,
+    deleteCart,
+    getCarts,
+    checkout,
+    directPurchase,
+    getUserInvoice,
+    getInvoiceDetail,
+    getPaymentMethods,
   };
 
   return (
-    <ApiContext.Provider value={{ URLs, AuthServices, AppServices }}>
+    <ApiContext.Provider
+      value={{ URLs, AuthServices, AppServices, GlobalDialogUtil }}
+    >
       {children}
     </ApiContext.Provider>
   );

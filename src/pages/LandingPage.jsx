@@ -279,7 +279,7 @@ const LandingPage = () => {
           }}
         >
           {categories.map((c, i) => (
-            <KategoriCard key={i} image={c.image} nama={c.tagName} link="/" />
+            <KategoriCard key={i} image={c.image} nama={c.tagName} id={c.id} />
           ))}
         </Box>
       </Box>

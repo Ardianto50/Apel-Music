@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../assets/components/Navbar";
-import { Box, CardMedia, Stack, Typography } from "@mui/material";
+import { Box, Button, CardMedia, Stack, Typography } from "@mui/material";
 import Footer from "../assets/components/Footer";
 import CourseCard from "../assets/components/CourseCard";
 import enoNetral from "../assets/img/eno-netral.png";
@@ -12,41 +12,110 @@ import { blue, grey } from "@mui/material/colors";
 import style from "../assets/css/pages/LandingPage.css";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { useApiContext } from "../context/ApiProvider";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 
 const MenuCourse = () => {
-  const { categoryId } = useParams();
-
   useEffect(() => {
-    console.log(categoryId);
-    // Code: request get dengan axios untuk menampilkan course dengan category yang dikirimkan
+    window.scrollTo(0, 0); // sewaktu page dibuka, langsung scroll ke atas
   }, []);
 
-  const [dummyClass, setDummyClass] = useState([
+  const { categoryId } = useParams();
+
+  const [courses, setCourses] = useState([
     {
-      image: enoNetral,
-      judul: "kursus Drummer Special Coach (Eno Netral)",
-      kategori: "Drum",
-      harga: 8_500_000,
-    },
-    {
-      image: expertDrumClass,
-      judul: "Expert Level Drummer Lessons",
-      kategori: "Drum",
-      harga: 5_450_000,
-    },
-    {
-      image: progressiveDrumClass,
-      judul: "From zero to Profesional Drumer (Complit Package)",
-      kategori: "Drum",
-      harga: 13_000_000,
-    },
-    {
-      image: orangMainDrum,
-      judul: "Drummer for kids (Level Basic/1)",
-      kategori: "Drum",
-      harga: 2_200_000,
+      id: "",
+      imageName: "",
+      name: "",
+      price: 0,
+      category: {
+        id: "",
+        tagName: "",
+      },
     },
   ]);
+
+  const [category, setCategory] = useState({
+    id: "",
+    tagName: "",
+    name: "",
+    image: "",
+    bannerImage: "",
+    categoryDescription: "",
+  });
+
+  const [pageSize, setPageSize] = useState(6);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const { AppServices, URLs } = useApiContext();
+
+  useEffect(() => {
+    setCourses([]);
+    setCategory({});
+    let params = {
+      PageSize: pageSize,
+      CurrentPage: currentPage,
+    };
+    AppServices.getCourseByCategory(categoryId, params)
+      .then((res) => {
+        // console.log(res.data);
+        let result = res.data;
+        setCourses(result.items);
+      })
+      .catch((err) => {
+        let response = err.response;
+        if (response.status === 404) setCurrentPage(1);
+      });
+
+    AppServices.getCategoryDetail(categoryId)
+      .then((res) => {
+        let result = res.data;
+        setCategory(result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [AppServices, pageSize, currentPage, categoryId]);
+
+  const goLeft = () => {
+    if (currentPage !== 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const goRight = () => {
+    if (courses.length === pageSize) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  // const [dummyClass, setDummyClass] = useState([
+  //   {
+  //     image: enoNetral,
+  //     judul: "kursus Drummer Special Coach (Eno Netral)",
+  //     kategori: "Drum",
+  //     harga: 8_500_000,
+  //   },
+  //   {
+  //     image: expertDrumClass,
+  //     judul: "Expert Level Drummer Lessons",
+  //     kategori: "Drum",
+  //     harga: 5_450_000,
+  //   },
+  //   {
+  //     image: progressiveDrumClass,
+  //     judul: "From zero to Profesional Drumer (Complit Package)",
+  //     kategori: "Drum",
+  //     harga: 13_000_000,
+  //   },
+  //   {
+  //     image: orangMainDrum,
+  //     judul: "Drummer for kids (Level Basic/1)",
+  //     kategori: "Drum",
+  //     harga: 2_200_000,
+  //   },
+  // ]);
 
   return (
     <>
@@ -60,7 +129,7 @@ const MenuCourse = () => {
           objectFit: "cover",
           objectPosition: "center",
         }}
-        src={bannerImage}
+        src={URLs.IMG_URL + category.bannerImage}
       ></Box>
       <Box
         sx={{
@@ -93,22 +162,10 @@ const MenuCourse = () => {
           }}
         >
           <Typography fontSize={"1.5rem"} fontWeight={700} color={"black"}>
-            Drummer Class
+            {category.name}
           </Typography>
           <Typography textAlign={"justify"}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Recusandae
-            dolor ea beatae accusamus neque impedit molestias, qui
-            exercitationem earum quos, magnam quam quaerat ullam mollitia at?
-            Voluptate corrupti delectus, modi atque, commodi numquam dolorem,
-            maxime voluptatibus aliquam necessitatibus voluptates? Molestias ad
-            repellat praesentium deserunt laborum est assumenda voluptatum
-            placeat. Fugiat earum officia assumenda ab exercitationem at
-            molestiae, accusantium recusandae consequatur aliquid et architecto
-            aspernatur? Assumenda qui atque exercitationem praesentium soluta
-            corporis optio velit deserunt magni asperiores ad totam maxime,
-            dolores laudantium, incidunt porro doloremque! Aliquid sunt
-            obcaecati ut, quod quasi molestias explicabo nemo atque natus
-            blanditiis molestiae velit provident porro!
+            {category.categoryDescription}
           </Typography>
         </Box>
       </Box>
@@ -146,9 +203,32 @@ const MenuCourse = () => {
             maxWidth: "1200px",
           }}
         >
-          {dummyClass.map((course, i) => (
-            <CourseCard key={i} {...course} />
+          {courses.map((course, i) => (
+            <CourseCard
+              key={i}
+              secureId={course.id}
+              judul={course.name}
+              image={course.imageName}
+              harga={course.price}
+              kategori={course.category.tagName}
+            />
           ))}
+        </Box>
+        <Box
+          sx={{
+            width: "200px",
+            display: "flex",
+            justifyContent: "space-evenly",
+            height: "50px",
+            margin: "auto",
+          }}
+        >
+          <Button variant="outlined" onClick={goLeft}>
+            <ChevronLeftIcon />
+          </Button>
+          <Button variant="outlined" onClick={goRight}>
+            <ChevronRightIcon />
+          </Button>
         </Box>
       </Box>
 

@@ -60,6 +60,7 @@ const Footer = () => {
           width: "100%",
           height: "100%",
           gap: "1.25rem",
+          marginLeft: { xs: "0rem", sm: "0rem", md: "0rem", lg: "3rem" },
         }}
       >
         <Typography

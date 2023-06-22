@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Box, Button, Checkbox, Typography } from "@mui/material";
 import Navbar from "../assets/components/Navbar";
 import { ListClass } from "../assets/components/my_class/ListClass";
@@ -11,8 +11,19 @@ import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import { rupiah } from "../utility/formatIDR";
 import PaymentDialog from "../assets/components/dialogs/PaymentDialog";
 import { useNavigate } from "react-router-dom";
+import { useApiContext } from "../context/ApiProvider";
+import { formatDate } from "../utility/dateFormat";
 
-const CheckoutList = ({ img, category, name, schedule }) => {
+const CheckoutList = ({
+  id,
+  img,
+  category,
+  name,
+  schedule,
+  price,
+  onCheck,
+  isChecked,
+}) => {
   return (
     <Box
       sx={{
@@ -36,9 +47,13 @@ const CheckoutList = ({ img, category, name, schedule }) => {
         }}
       >
         <Checkbox
+          checked={isChecked}
+          onClick={() => {
+            onCheck(id, isChecked);
+          }}
           sx={{ placeSelf: { xs: "start", sm: "start", md: "center" } }}
         />
-        <ListClass {...{ img, category, name, schedule }} />
+        <ListClass {...{ img, category, name, schedule, price }} />
       </Box>
       <Button
         sx={{ color: "red" }}
@@ -59,32 +74,89 @@ export const Checkout = () => {
     navigate("/success-purchase");
   };
 
-  const dummyData = [
+  const [carts, setCarts] = useState([
     {
-      img: eno,
-      category: "Drum",
-      name: "Kursus Drummer Special Coach (Eno Netral)",
-      schedule: "Senin, 25 Juli 2022",
+      id: "",
+      userId: "",
+      courseId: "",
+      courseSchedule: "",
+      course: {
+        id: "",
+        name: "",
+        price: 0,
+        imageName: "",
+        category: {
+          id: "",
+          name: "",
+        },
+      },
     },
-    {
-      img: orgMainBiola,
-      category: "Biola",
-      name: "Biola Mid-Level Course",
-      schedule: "Sabtu, 23 Juli 2022",
-    },
-    {
-      img: orgMainDrum,
-      category: "Drum",
-      name: "Expert Level Drummer Lessons",
-      schedule: "Sabtu, 23 Juli 2022",
-    },
-    {
-      img: saxophone,
-      category: "Saxophone",
-      name: "Expert Level Saxophone",
-      schedule: "Sabtu, 23 Juli 2022",
-    },
-  ];
+  ]);
+
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  const [checkedItems, setCheckedItems] = useState([]);
+
+  const [checkAll, setCheckAll] = useState();
+
+  useEffect(() => {
+    let temp = 0;
+    checkedItems.forEach((val) => {
+      let obj = carts.find((x) => x.id === val);
+      temp += obj.course.price;
+    });
+    setTotalPrice(temp);
+
+    // Ketika semua di check maka checkAll akan otomatis true
+    if (checkedItems.length === carts.length) {
+      setCheckAll(true);
+      checkAllRef.current.click();
+    }
+  }, [carts, checkedItems]);
+
+  const handleCheck = (id, isChecked) => {
+    if (!isChecked) {
+      setCheckedItems([...checkedItems, id]);
+    } else {
+      let temp = checkedItems.filter((x) => x !== id);
+      setCheckedItems(temp);
+    }
+  };
+
+  const isChecked = (id) => {
+    let val = checkedItems.findIndex((x) => x === id);
+    return val > -1;
+  };
+
+  const checkAllRef = useRef(null);
+
+  const handleCheckAll = () => {
+    if (carts.length !== checkedItems.length) {
+      // Kalo belum ter cek semua, baru bisa dicek semua, tapi kalo sudah, uncek semua
+      let checkedIds = carts.map((c) => c.id);
+      setCheckedItems(checkedIds);
+    } else {
+      setCheckedItems([]);
+    }
+  };
+
+  useEffect(() => {
+    console.log(checkAll, "checkAll");
+  }, [checkAll]);
+
+  const { AppServices, URLs } = useApiContext();
+
+  useEffect(() => {
+    AppServices.getCarts()
+      .then((res) => {
+        // console.log(res.data);
+        let result = res.data;
+        setCarts(result);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [AppServices]);
 
   const handlePayment = () => {
     setDialogOpen(true);
@@ -119,7 +191,13 @@ export const Checkout = () => {
             paddingX: "1rem",
           }}
         >
-          <Checkbox />
+          <Checkbox
+            ref={checkAllRef}
+            onChange={(e) => {
+              handleCheckAll();
+            }}
+            inputProps={{ "aria-label": "controlled" }}
+          />
           <Typography
             fontSize={"1.25rem"}
             lineHeight={"1.875rem"}
@@ -130,8 +208,18 @@ export const Checkout = () => {
         </Box>
 
         {/* List course */}
-        {dummyData.map((data, i) => (
-          <CheckoutList {...data} key={i} />
+        {carts.map((data, i) => (
+          <CheckoutList
+            id={data.id}
+            img={data.course.imageName && URLs.IMG_URL + data.course.imageName}
+            category={data.course.category.name}
+            name={data.course.name}
+            price={data.course.price}
+            schedule={formatDate(data.courseSchedule)}
+            onCheck={handleCheck}
+            isChecked={isChecked(data.id)}
+            key={i}
+          />
         ))}
         {/* End List course */}
       </Box>
@@ -168,7 +256,7 @@ export const Checkout = () => {
             lineHeight={"2.25rem"}
             color={"#5D5FEF"}
           >
-            {rupiah(11_500_000)}
+            {rupiah(totalPrice)}
           </Typography>
         </Box>
         <Button
