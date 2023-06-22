@@ -182,7 +182,7 @@ const ApiProvider = ({ children }) => {
     );
   };
 
-  const getUserInvoice = async (params) => {
+  const getUserInvoices = async (params) => {
     let PageSize = params?.PageSize || 5;
     let CurrentPage = params?.CurrentPage || 1;
     let Direction = params?.Direction || "ASC";
@@ -236,7 +236,10 @@ const ApiProvider = ({ children }) => {
 
   const deleteCart = async (cartIds) => {
     axios.defaults.headers.common = getAuthorization();
-    return await axios.delete(URLs.BASE_URL + "ShoppingCart", cartIds);
+    let obj = {
+      Ids: cartIds,
+    };
+    return await axios.post(URLs.BASE_URL + "ShoppingCart", obj);
   };
 
   const getCarts = async () => {
@@ -329,7 +332,7 @@ const ApiProvider = ({ children }) => {
     getCarts,
     checkout,
     directPurchase,
-    getUserInvoice,
+    getUserInvoices,
     getInvoiceDetail,
     getPaymentMethods,
   };

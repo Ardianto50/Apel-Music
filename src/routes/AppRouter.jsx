@@ -106,7 +106,7 @@ const AppRouter = () => {
         <Route path="/checkout" element={protectedComp(<Checkout />)} />
         <Route path="/invoice" element={protectedComp(<MenuInvoices />)} />
         <Route
-          path="/invoice/rincian-invoice"
+          path="/invoice/rincian-invoice/:invoiceId"
           element={protectedComp(<DetailsInvoice />)}
         />
         {/* END: Protected Route */}

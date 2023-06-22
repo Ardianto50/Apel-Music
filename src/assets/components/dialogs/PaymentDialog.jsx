@@ -61,12 +61,22 @@ const PaymentListItem = ({ id, image, name, choosen, setChoosen }) => {
   );
 };
 
-const PaymentDialog = ({ open, handleClose, onSubmit, setPaymenId }) => {
+const PaymentDialog = ({ open, handleClose, onSubmit, setPaymentId }) => {
   const [choosen, setChoosen] = useState("");
+
+  useEffect(() => {
+    setPaymentId(choosen);
+  }, [choosen, setPaymentId]);
 
   const { AppServices, URLs } = useApiContext();
 
-  const [methods, setMethods] = useState([]);
+  const [methods, setMethods] = useState([
+    {
+      id: "",
+      image: "",
+      name: "",
+    },
+  ]);
 
   useEffect(() => {
     AppServices.getPaymentMethods()
@@ -87,6 +97,7 @@ const PaymentDialog = ({ open, handleClose, onSubmit, setPaymenId }) => {
             {methods.map((payment, i) => (
               <PaymentListItem
                 {...payment}
+                image={URLs.IMG_URL + payment.image}
                 key={i}
                 choosen={choosen}
                 setChoosen={setChoosen}

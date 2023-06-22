@@ -1,5 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Box, Button, Checkbox, Typography } from "@mui/material";
+import {
+  Backdrop,
+  Box,
+  Button,
+  Checkbox,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
 import Navbar from "../assets/components/Navbar";
 import { ListClass } from "../assets/components/my_class/ListClass";
 import Footer from "../assets/components/Footer";
@@ -23,6 +30,7 @@ const CheckoutList = ({
   price,
   onCheck,
   isChecked,
+  onDelete,
 }) => {
   return (
     <Box
@@ -59,6 +67,10 @@ const CheckoutList = ({
         sx={{ color: "red" }}
         variant="text"
         startIcon={<DeleteForeverIcon color="red" />}
+        onClick={() => {
+          onDelete([id]);
+          console.log(id);
+        }}
       >
         Delete
       </Button>
@@ -69,10 +81,6 @@ const CheckoutList = ({
 export const Checkout = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const navigate = useNavigate();
-
-  const onSubmit = () => {
-    navigate("/success-purchase");
-  };
 
   const [carts, setCarts] = useState([
     {
@@ -98,6 +106,10 @@ export const Checkout = () => {
   const [checkedItems, setCheckedItems] = useState([]);
 
   const [checkAll, setCheckAll] = useState();
+
+  const [paymentId, setPaymentId] = useState("");
+
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     let temp = 0;
@@ -146,6 +158,8 @@ export const Checkout = () => {
 
   const { AppServices, URLs } = useApiContext();
 
+  const [renderCarts, setRenderCarts] = useState(true);
+
   useEffect(() => {
     AppServices.getCarts()
       .then((res) => {
@@ -156,10 +170,38 @@ export const Checkout = () => {
       .catch((err) => {
         console.log(err);
       });
-  }, [AppServices]);
+  }, [AppServices, renderCarts]);
 
   const handlePayment = () => {
     setDialogOpen(true);
+  };
+
+  const onSubmit = () => {
+    setIsLoading(true);
+    // navigate("/success-purchase");
+    let purchaseDate = new Date().toISOString();
+    AppServices.checkout(paymentId, purchaseDate, checkedItems)
+      .then((res) => {
+        navigate("/success-purchase");
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+    console.log(paymentId);
+  };
+
+  const handleDelete = (ids) => {
+    AppServices.deleteCart(ids)
+      .then((res) => {
+        console.log(res);
+        setRenderCarts(!renderCarts);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -218,6 +260,7 @@ export const Checkout = () => {
             schedule={formatDate(data.courseSchedule)}
             onCheck={handleCheck}
             isChecked={isChecked(data.id)}
+            onDelete={handleDelete}
             key={i}
           />
         ))}
@@ -277,7 +320,15 @@ export const Checkout = () => {
         open={dialogOpen}
         handleClose={() => setDialogOpen(false)}
         onSubmit={onSubmit}
+        setPaymentId={setPaymentId}
       />
+      <Backdrop
+        sx={{ color: "#fff", zIndex: (theme) => theme.zIndex.drawer + 1 }}
+        open={isLoading}
+        onClick={() => setIsLoading(false)}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop>
     </>
   );
 };

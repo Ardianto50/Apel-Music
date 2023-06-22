@@ -1,12 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Navbar from "../assets/components/Navbar";
 import Footer from "../assets/components/Footer";
 import { Box, Typography } from "@mui/material";
 import AppCrumbs from "../assets/components/AppCrumbs";
 import AppTable from "../assets/components/AppTable";
 import { rupiah } from "../utility/formatIDR";
+import { useParams } from "react-router-dom";
+import { useApiContext } from "../context/ApiProvider";
+import { formatDate } from "../utility/dateFormat";
 
 const DetailsInvoice = () => {
+  const { invoiceId } = useParams();
+
   const datas = [
     {
       no: 1,
@@ -24,7 +29,66 @@ const DetailsInvoice = () => {
     },
   ];
 
+  const converCourseToRow = (num, course) => {
+    return {
+      no: num || 0,
+      nama_course: course?.courseName,
+      kategori: course?.categoryName,
+      jadwal: formatDate(course?.courseSchedule),
+      harga: rupiah(course?.purchasePrice),
+    };
+  };
+
+  const { AppServices, URLs } = useApiContext();
+
+  const [courses, setCourses] = useState([
+    {
+      courseId: "",
+      courseName: "",
+      courseSchedule: "",
+      categoryId: "",
+      categoryName: "",
+      purchasePrice: 0,
+    },
+  ]);
+  const [courseRows, setCourseRows] = useState([
+    {
+      no: 0,
+      nama_course: "",
+      kategori: "",
+      jadwal: "",
+      harga: 0,
+    },
+  ]);
+
+  const [noInvoice, setNoInvoice] = useState("");
+  const [purchaseDate, setPurchaseDate] = useState("");
+  const [totalPrice, setTotalPrice] = useState(0);
+
   const columnsLabel = ["No", "Nama Course", "Kategori", "Jadwal", "Harga"];
+
+  useEffect(() => {
+    setCourseRows([]);
+    setCourses([]);
+    AppServices.getInvoiceDetail(invoiceId)
+      .then((res) => {
+        let result = res.data;
+        setNoInvoice(result.invoiceNumber);
+        setPurchaseDate(result.purchaseDate);
+        setTotalPrice(result.totalPrice);
+        let courses = result?.courses;
+        console.log(result);
+        if (courses) {
+          let rows = courses.map((course, i) =>
+            converCourseToRow(i + 1, course)
+          );
+          setCourseRows(rows);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [AppServices, invoiceId]);
 
   return (
     <>
@@ -82,7 +146,7 @@ const DetailsInvoice = () => {
               fontSize={"1.125rem"}
               color={"#4F4F4F"}
             >
-              APM00003
+              {noInvoice}
             </Typography>
           </Box>
           {/* END No Invoice: APM0003 */}
@@ -107,7 +171,7 @@ const DetailsInvoice = () => {
               fontSize={"1.125rem"}
               color={"#4F4F4F"}
             >
-              12 Juni 2022
+              {purchaseDate}
             </Typography>
           </Box>
           {/* END Tanggal Beli */}
@@ -137,14 +201,14 @@ const DetailsInvoice = () => {
               fontSize={"1.125rem"}
               color={"#4F4F4F"}
             >
-              {rupiah(11_500_000)}
+              {rupiah(totalPrice)}
             </Typography>
           </Box>
           {/* END Total harga */}
         </Box>
         {/* End Bagian Rincian */}
         {/* START Table */}
-        <AppTable rows={datas} columnsLabel={columnsLabel} />
+        <AppTable rows={courseRows} columnsLabel={columnsLabel} />
         {/* END Table */}
       </Box>
       <Footer />

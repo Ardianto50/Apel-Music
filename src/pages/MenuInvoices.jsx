@@ -21,6 +21,8 @@ import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import AppTable from "../assets/components/AppTable";
 import { rupiah } from "../utility/formatIDR";
 import AppTableMobile from "../assets/components/AppTableMobile";
+import { useApiContext } from "../context/ApiProvider";
+import { formatDate } from "../utility/dateFormat";
 
 // MAIN COMPONENT
 const MenuInvoices = () => {
@@ -105,6 +107,103 @@ const MenuInvoices = () => {
     "Action",
   ];
 
+  const [invoices, setInvoices] = useState([
+    {
+      id: 0,
+      invoiceNumber: "",
+      userId: "",
+      purchaseDate: "",
+      quantity: 0,
+      totalPrice: 0,
+      paymentId: "",
+      payment: {
+        id: "",
+        image: null,
+        name: "",
+        inactive: "",
+      },
+    },
+  ]);
+
+  const [invoiceRows, setInvoiceRows] = useState([
+    {
+      No: 0,
+      NoInvoice: "",
+      TglBeli: "",
+      JmlKursus: 0,
+      TotalHarga: rupiah(0),
+      Btn: (
+        <>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              width: "180px",
+              borderRadius: "0.5rem",
+              fontSize: "1rem",
+              fontWeight: 500,
+            }}
+            href="/invoice/rincian-invoice/"
+          >
+            Rincian
+          </Button>
+        </>
+      ),
+    },
+  ]);
+
+  const { AppServices, URLs } = useApiContext();
+
+  const [pageSize, setPageSize] = useState(6);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const convertInvoiceToRows = (invoice) => {
+    return {
+      No: invoice?.id,
+      NoInvoice: invoice?.invoiceNumber,
+      TglBeli: formatDate(invoice?.purchaseDate),
+      JmlKursus: invoice?.quantity,
+      TotalHarga: rupiah(invoice?.totalPrice),
+      Btn: (
+        <>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              width: "180px",
+              borderRadius: "0.5rem",
+              fontSize: "1rem",
+              fontWeight: 500,
+            }}
+            href={"/invoice/rincian-invoice/" + invoice?.id}
+          >
+            Rincian
+          </Button>
+        </>
+      ),
+    };
+  };
+
+  useEffect(() => {
+    setInvoiceRows([]);
+    setInvoices([]);
+    let params = {
+      PageSize: pageSize,
+      CurrentPage: currentPage,
+    };
+    AppServices.getUserInvoices(params)
+      .then((res) => {
+        let result = res.data.items;
+        if (result) {
+          let rows = result.map((inv) => convertInvoiceToRows(inv));
+          setInvoiceRows(rows);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [AppServices, pageSize, currentPage]);
+
   return (
     <>
       <Navbar isLoggedIn={true} />
@@ -132,7 +231,7 @@ const MenuInvoices = () => {
           Menu Invoice
         </Typography>
         {/* START Table */}
-        <AppTable rows={data} columnsLabel={columnsLabel} />
+        <AppTable rows={invoiceRows} columnsLabel={columnsLabel} />
         {/* END Table */}
       </Box>
       <Footer />
