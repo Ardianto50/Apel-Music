@@ -110,11 +110,11 @@ export default function AdminPayment() {
 
   const [add, setAdd] = React.useState(false);
 
-  const handleAddUsers = () => {
+  const handleAddPayment = () => {
     setAdd(true);
   };
 
-  const handleCloseAddUsers = () => {
+  const handleCloseAddPayment = () => {
     setAdd(false);
   };
 
@@ -123,29 +123,58 @@ export default function AdminPayment() {
     setSelectedImage(file);
   };
 
-  const Payment = [
-    {
-      Name: "Nama Payment1",
-      Img: "https://localhost:7076/api/Image/GetImage/46a900bd-b3d2-44af-9bf7-212585d0e5c0.png",
-    },
-    {
-      Name: "Nama Payment2",
-      Img: "https://localhost:7076/api/Image/GetImage/1c1fc650-e489-4c46-ab27-98b7b891f4a1.png",
-    },
-    {
-      Name: "Nama Payment2",
-      Img: "https://localhost:7076/api/Image/GetImage/1c1fc650-e489-4c46-ab27-98b7b891f4a1.png",
-    },
-  ];
+  const DialogAdd = ({ open, onClose, onSave }) => {
+    return (
+      <Dialog open={open} onClose={onClose}>
+        <DialogTitle>Add Payment Method</DialogTitle>
+        <DialogContent sx={{ width: "50vh" }}>
+          <Grid item marginY={2}>
+            <TextField
+              id="PaymentName"
+              label="Payment Name"
+              variant="outlined"
+              fullWidth
+              type="text"
+            />
+          </Grid>
+          <Grid item marginY={2}>
+            <TextField
+              type="file"
+              onChange={handleImageChange}
+              label="Select Image"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              fullWidth
+              margin="normal"
+            />
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose} sx={{ color: "black" }}>
+            Cancel
+          </Button>
+          <Button
+            onClick={onSave}
+            variant="contained"
+            sx={{
+              bgcolor: "#F2C94C",
+              "&:hover": { bgcolor: "#FFCD38" },
+            }}
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  };
 
   useEffect(() => {
     const fecthData = async () => {
       try {
-        const response = await axios.get(
-          "https://localhost:7076/api/Payment/GetAllPayment"
-        );
+        const response = await axios.get("https://localhost:7076/api/Payment");
         setData(response.data);
-        console.log("test");
+        console.log(response.data);
       } catch {
         console.log(Error);
       }
@@ -237,7 +266,7 @@ export default function AdminPayment() {
                   </Typography>
                   <Button
                     variant="contained"
-                    onClick={handleAddUsers}
+                    onClick={handleAddPayment}
                     sx={{
                       bgcolor: "#F2C94C",
                       "&:hover": { bgcolor: "#FFCD38" },
@@ -245,51 +274,11 @@ export default function AdminPayment() {
                   >
                     Add Payment
                   </Button>
-
-                  <Dialog open={add} onClose={handleCloseAddUsers}>
-                    <DialogTitle>Add Payment Method</DialogTitle>
-                    <DialogContent sx={{ width: "50vh" }}>
-                      <Grid item marginY={2}>
-                        <TextField
-                          id="PaymentName"
-                          label="Payment Name"
-                          variant="outlined"
-                          fullWidth
-                          type="text"
-                        />
-                      </Grid>
-                      <Grid item marginY={2}>
-                        <TextField
-                          type="file"
-                          onChange={handleImageChange}
-                          label="Select Image"
-                          InputLabelProps={{
-                            shrink: true,
-                          }}
-                          fullWidth
-                          margin="normal"
-                        />
-                      </Grid>
-                    </DialogContent>
-                    <DialogActions>
-                      <Button
-                        onClick={handleCloseAddUsers}
-                        sx={{ color: "black" }}
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        onClick={handleCloseAddUsers}
-                        variant="contained"
-                        sx={{
-                          bgcolor: "#F2C94C",
-                          "&:hover": { bgcolor: "#FFCD38" },
-                        }}
-                      >
-                        Save
-                      </Button>
-                    </DialogActions>
-                  </Dialog>
+                  <DialogAdd
+                    open={add}
+                    onClose={handleCloseAddPayment}
+                    onSave={handleCloseAddPayment}
+                  />
                 </Grid>
 
                 <Paper
@@ -300,38 +289,33 @@ export default function AdminPayment() {
                     height: 240,
                   }}
                 >
-                  {Payment.map((value, index) => (
-                    <Box
-                      key={index}
-                      marginX={3}
-                      height={"7vh"}
-                      flexDirection="column"
+                  {data.map((value, index) => (
+                    <Stack
+                      direction={"row"}
+                      justifyContent={"space-between"}
                       alignItems={"center"}
+                      bgcolor={"aqua"}
+                      marginY={1}
+                      paddingX={4}
                     >
-                      <Stack
-                        direction={"row"}
-                        justifyContent={"space-between"}
-                        alignItems={"center"}
-                      >
-                        <Stack alignItems={"center"} direction={"row"}>
-                          <img src={value.Img} alt="" />
-                          <Typography variant="h6" paddingX={2}>
-                            {value.Name}
-                          </Typography>
-                        </Stack>
-                        <Grid item>
-                          <Button
-                            variant="contained"
-                            sx={{
-                              bgcolor: "#F2C94C",
-                              "&:hover": { bgcolor: "#FFCD38" },
-                            }}
-                          >
-                            Edit
-                          </Button>
-                        </Grid>
+                      <Stack alignItems={"center"} direction={"row"}>
+                        <img src={value.image} alt="" />
+                        <Typography variant="h6" paddingX={2}>
+                          {value.name}
+                        </Typography>
                       </Stack>
-                    </Box>
+                      <Grid item>
+                        <Button
+                          variant="contained"
+                          sx={{
+                            bgcolor: "#F2C94C",
+                            "&:hover": { bgcolor: "#FFCD38" },
+                          }}
+                        >
+                          Edit
+                        </Button>
+                      </Grid>
+                    </Stack>
                   ))}
                 </Paper>
               </Grid>

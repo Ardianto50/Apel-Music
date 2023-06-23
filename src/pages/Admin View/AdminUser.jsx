@@ -25,7 +25,10 @@ import {
   DialogTitle,
   Stack,
   TextField,
+  Switch,
 } from "@mui/material";
+import AppTable from "../../assets/components/AppTable";
+import axios from "axios";
 // import Chart from "./Chart";
 // import Deposits from "./Deposits";
 // import Orders from "./Orders";
@@ -99,6 +102,24 @@ const defaultTheme = createTheme();
 
 export default function AdminUser() {
   const [open, setOpen] = React.useState(false);
+  const [edit, setEdit] = React.useState(false);
+  const [data, setData] = React.useState([]);
+
+  React.useEffect(() => {
+    const FetchData = async () => {
+      try {
+        const response = await axios.get("url api");
+        const result = response.data;
+
+        setData(result);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    FetchData();
+  }, []);
+
   const toggleDrawer = () => {
     setOpen(!open);
   };
@@ -111,6 +132,150 @@ export default function AdminUser() {
 
   const handleCloseAddUsers = () => {
     setAdd(false);
+  };
+
+  const editUser = () => {};
+
+  const handleEdit = () => {
+    setEdit(true);
+  };
+  const handleEditCls = () => {
+    setEdit(false);
+  };
+
+  const DialogBoxEdit = ({ open, onClose, onSave }) => {
+    const [isActive, setIsActive] = React.useState(true);
+
+    const handleSwitchChange = () => {
+      setIsActive(!isActive);
+    };
+    return (
+      <Dialog open={open} onClose={onClose}>
+        <DialogTitle>Edit User</DialogTitle>
+        <DialogContent sx={{ width: "50vh" }}>
+          <Grid item marginY={2}>
+            <TextField
+              id="Username"
+              label="User Name"
+              variant="outlined"
+              type="text"
+              fullWidth
+            />
+          </Grid>
+          <Grid item marginY={2}>
+            <TextField
+              id="Email"
+              label="Email"
+              variant="outlined"
+              type="text"
+              fullWidth
+            />
+          </Grid>
+          <Grid item marginY={2}>
+            <TextField
+              id="Password"
+              label="Password"
+              variant="outlined"
+              type="password"
+              fullWidth
+            />
+          </Grid>
+          <Grid item marginY={2}>
+            <TextField
+              id="ConfirmPassword"
+              label="Confirm Password"
+              variant="outlined"
+              type="password"
+              fullWidth
+            />
+          </Grid>
+          <Grid item marginY={2}>
+            <Switch
+              checked={isActive}
+              onChange={handleSwitchChange}
+              color="primary"
+            />
+            {isActive ? "Active" : "Inactive"}
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose} sx={{ color: "black" }}>
+            Cancel
+          </Button>
+          <Button
+            onClick={onSave}
+            variant="contained"
+            sx={{
+              bgcolor: "#F2C94C",
+              "&:hover": { bgcolor: "#FFCD38" },
+            }}
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
+  };
+
+  const DialogBoxAdd = ({ open, onClose, onSave }) => {
+    return (
+      <Dialog open={open} onClose={onClose}>
+        <DialogTitle>Add User</DialogTitle>
+        <DialogContent sx={{ width: "50vh" }}>
+          <Grid item marginY={2}>
+            <TextField
+              id="Username"
+              label="User Name"
+              variant="outlined"
+              type="text"
+              fullWidth
+            />
+          </Grid>
+          <Grid item marginY={2}>
+            <TextField
+              id="Email"
+              label="Email"
+              variant="outlined"
+              type="text"
+              fullWidth
+            />
+          </Grid>
+          <Grid item marginY={2}>
+            <TextField
+              id="Password"
+              label="Password"
+              variant="outlined"
+              type="password"
+              fullWidth
+            />
+          </Grid>
+          <Grid item marginY={2}>
+            <TextField
+              id="ConfirmPassword"
+              label="Confirm Password"
+              variant="outlined"
+              type="password"
+              fullWidth
+            />
+          </Grid>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose} sx={{ color: "black" }}>
+            Cancel
+          </Button>
+          <Button
+            onClick={onSave}
+            variant="contained"
+            sx={{
+              bgcolor: "#F2C94C",
+              "&:hover": { bgcolor: "#FFCD38" },
+            }}
+          >
+            Save
+          </Button>
+        </DialogActions>
+      </Dialog>
+    );
   };
 
   const Users = [
@@ -127,6 +292,43 @@ export default function AdminUser() {
       Status: false,
     },
   ];
+
+  const UserData = Users.map((user) => {
+    return {
+      Name: user.Name,
+      Email: user.Email,
+      Status: (
+        <Button
+          variant="contained"
+          color={user.Status ? "success" : "error"}
+          sx={{ width: "5rem" }}
+        >
+          {user.Status ? "Active" : "Inactive"}
+        </Button>
+      ),
+      Action: (
+        <>
+          <Button
+            variant="contained"
+            sx={{
+              bgcolor: "#F2C94C",
+              "&:hover": { bgcolor: "#FFCD38" },
+            }}
+            onClick={handleEdit}
+          >
+            Edit
+          </Button>
+          <DialogBoxEdit
+            open={edit}
+            onClose={handleEditCls}
+            onSave={handleEditCls}
+          />
+        </>
+      ),
+    };
+  });
+
+  const columnTable = ["Name", "Email", "Status", "Action"];
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -217,116 +419,13 @@ export default function AdminUser() {
                   >
                     Add User
                   </Button>
-
-                  <Dialog open={add} onClose={handleCloseAddUsers}>
-                    <DialogTitle>Add User</DialogTitle>
-                    <DialogContent sx={{ width: "50vh" }}>
-                      <Grid item marginY={2}>
-                        <TextField
-                          id="Fullname"
-                          label="Fullname"
-                          variant="outlined"
-                          fullWidth
-                          type="text"
-                        />
-                      </Grid>
-                      <Grid item marginY={2}>
-                        <TextField
-                          id="Email"
-                          label="Email"
-                          variant="outlined"
-                          fullWidth
-                          type="email"
-                        />
-                      </Grid>
-                      <Grid item marginY={2}>
-                        <TextField
-                          id="Password"
-                          label="Password"
-                          variant="outlined"
-                          fullWidth
-                          type="password"
-                        />
-                      </Grid>
-                      <Grid item marginY={2}>
-                        <TextField
-                          id="ConfirmPassword"
-                          label="Confirm Password"
-                          variant="outlined"
-                          fullWidth
-                          type="password"
-                        />
-                      </Grid>
-                    </DialogContent>
-                    <DialogActions>
-                      <Button
-                        onClick={handleCloseAddUsers}
-                        sx={{ color: "black" }}
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        onClick={handleCloseAddUsers}
-                        variant="contained"
-                        sx={{
-                          bgcolor: "#F2C94C",
-                          "&:hover": { bgcolor: "#FFCD38" },
-                        }}
-                      >
-                        Save
-                      </Button>
-                    </DialogActions>
-                  </Dialog>
+                  <DialogBoxAdd
+                    open={add}
+                    onClose={handleCloseAddUsers}
+                    onSave={handleCloseAddUsers}
+                  />
                 </Grid>
-
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 240,
-                  }}
-                >
-                  {/* Users */}
-                  {Users.map((value, index) => (
-                    <Box
-                      key={index}
-                      marginX={3}
-                      height={"7vh"}
-                      flexDirection="column"
-                      alignItems={"center"}
-                    >
-                      <Stack
-                        direction={"row"}
-                        justifyContent={"space-between"}
-                        alignItems={"center"}
-                      >
-                        <Typography variant="h5">{value.Id}</Typography>
-                        <Typography variant="h5">{value.Name}</Typography>
-                        <Typography variant="h5">{value.Email}</Typography>
-                        <Button
-                          variant="contained"
-                          disabled={true}
-                          sx={{
-                            bgcolor:
-                              value.Status == true ? "#00FF00" : "#CCCCCC",
-                          }}
-                        >
-                          {value.Status ? "Aktif" : "Inactive"}
-                        </Button>
-                        <Button
-                          variant="contained"
-                          sx={{
-                            bgcolor: "#F2C94C",
-                            "&:hover": { bgcolor: "#FFCD38" },
-                          }}
-                        >
-                          Edit
-                        </Button>
-                      </Stack>
-                    </Box>
-                  ))}
-                </Paper>
+                <AppTable rows={UserData} columnsLabel={columnTable} />
               </Grid>
 
               <Grid item xs={12}>

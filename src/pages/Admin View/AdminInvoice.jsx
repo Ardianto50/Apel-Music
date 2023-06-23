@@ -276,16 +276,16 @@ export default function AdminInvoice() {
                   <Typography variant="h4">Invoices</Typography>
                 </Grid>
 
-                <Paper
+                {/* <Paper
                   sx={{
                     p: 2,
                     display: "flex",
                     flexDirection: "column",
                     height: " auto",
                   }}
-                >
-                  <AppTable rows={data} columnsLabel={columnsLabel} />
-                </Paper>
+                > */}
+                <AppTable rows={data} columnsLabel={columnsLabel} />
+                {/* </Paper> */}
               </Grid>
 
               <Grid item xs={12}>

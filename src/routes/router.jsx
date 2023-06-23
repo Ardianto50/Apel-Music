@@ -8,6 +8,10 @@ import { NewPassResetPassword } from "../pages/NewPassResetPassword";
 import { SuccesPurchase } from "../pages/SuccesPurchase";
 import { MyClass } from "../pages/MyClass";
 import { Checkout } from "../pages/Checkout";
+import AdminPage from "../pages/Admin View/AdminPage";
+import AdminInvoice from "../pages/Admin View/AdminInvoice";
+import AdminPayment from "../pages/Admin View/AdminPayment";
+import AdminUser from "../pages/Admin View/Adminuser";
 
 // NOTE: ini nggak dipake lagi
 export const router = createBrowserRouter([
@@ -46,5 +50,21 @@ export const router = createBrowserRouter([
   {
     path: "/checkout",
     element: <Checkout />,
+  },
+  {
+    path: "/admin",
+    element: <AdminPage />,
+  },
+  {
+    path: "/admin/Invoices",
+    element: <AdminInvoice />,
+  },
+  {
+    path: "/admin/payment-methods",
+    element: <AdminPayment />,
+  },
+  {
+    path: "/admin/users",
+    element: <AdminUser />,
   },
 ]);
