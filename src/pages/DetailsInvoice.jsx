@@ -12,23 +12,6 @@ import { formatDate } from "../utility/dateFormat";
 const DetailsInvoice = () => {
   const { invoiceId } = useParams();
 
-  const datas = [
-    {
-      no: 1,
-      nama_course: "Kursus Drummer Special Coach (Eno Netral)",
-      kategori: "Drum",
-      jadwal: "Senin, 25 Juli 2022",
-      harga: rupiah(8_500_000),
-    },
-    {
-      no: 2,
-      nama_course: "Biola Mid-Level Course",
-      kategori: "Biola",
-      jadwal: "Sabtu, 23 Juli 2022",
-      harga: rupiah(3_000_000),
-    },
-  ];
-
   const converCourseToRow = (num, course) => {
     return {
       no: num || 0,
@@ -77,7 +60,7 @@ const DetailsInvoice = () => {
         setPurchaseDate(result.purchaseDate);
         setTotalPrice(result.totalPrice);
         let courses = result?.courses;
-        console.log(result);
+        // console.log(result);
         if (courses) {
           let rows = courses.map((course, i) =>
             converCourseToRow(i + 1, course)

@@ -3,8 +3,7 @@ import eno from "../../img/eno-netral.png";
 import { Box, Typography } from "@mui/material";
 import { rupiah } from "../../../utility/formatIDR";
 
-export const ListClass = ({ img, category, name, schedule, price }) => {
-
+export const ListClass = ({ id, img, category, name, schedule, price }) => {
   return (
     <>
       <Box

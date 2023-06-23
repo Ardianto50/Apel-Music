@@ -175,6 +175,25 @@ const ApiProvider = ({ children }) => {
 
   // ================= APP SERVICE =======================
 
+  const getMyClass = async (params) => {
+    let PageSize = params?.PageSize || 5;
+    let CurrentPage = params?.CurrentPage || 1;
+    let Direction = params?.Direction || "ASC";
+    let SortBy = params?.SortBy || "";
+    let Keyword = params?.Keyword || "";
+    const finalParam = {
+      PageSize,
+      CurrentPage,
+      Direction,
+      SortBy,
+      Keyword,
+    };
+    axios.defaults.headers.common = getAuthorization();
+    return await axios.get(URLs.BASE_URL + "Purchase/PurchasedCourse", {
+      params: finalParam,
+    });
+  };
+
   const getInvoiceDetail = async (invoiceId) => {
     axios.defaults.headers.common = getAuthorization();
     return await axios.get(
@@ -185,8 +204,8 @@ const ApiProvider = ({ children }) => {
   const getUserInvoices = async (params) => {
     let PageSize = params?.PageSize || 5;
     let CurrentPage = params?.CurrentPage || 1;
-    let Direction = params?.Direction || "ASC";
-    let SortBy = params?.SortBy || "";
+    let Direction = params?.Direction || "DESC";
+    let SortBy = params?.SortBy || "invoice_number";
     let Keyword = params?.Keyword || "";
     const finalParam = {
       PageSize,
@@ -239,7 +258,7 @@ const ApiProvider = ({ children }) => {
     let obj = {
       Ids: cartIds,
     };
-    return await axios.post(URLs.BASE_URL + "ShoppingCart", obj);
+    return await axios.post(URLs.BASE_URL + "ShoppingCart/DeleteCart", obj);
   };
 
   const getCarts = async () => {
@@ -309,7 +328,7 @@ const ApiProvider = ({ children }) => {
       SortBy,
       Keyword,
     };
-    console.log(axios.defaults.headers.common["Authorization"]);
+    // console.log(axios.defaults.headers.common["Authorization"]);
     const response = await axios.get(URLs.BASE_URL + "Course", {
       params: finalParam,
     });
@@ -335,6 +354,7 @@ const ApiProvider = ({ children }) => {
     getUserInvoices,
     getInvoiceDetail,
     getPaymentMethods,
+    getMyClass,
   };
 
   return (

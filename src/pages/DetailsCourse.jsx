@@ -22,6 +22,7 @@ import CourseCard from "../assets/components/CourseCard";
 import Footer from "../assets/components/Footer";
 import { useApiContext } from "../context/ApiProvider";
 import { formatDate } from "../utility/dateFormat";
+import PaymentDialog from "../assets/components/dialogs/PaymentDialog";
 
 const DetailsCourse = () => {
   const { courseId } = useParams();
@@ -76,6 +77,15 @@ const DetailsCourse = () => {
   const [pageSize, setPageSize] = useState(6);
   const [currentPage, setCurrentPage] = useState(1);
 
+  // Untuk buka payment method pas direct purchase
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  // Payment id untuk direct purchase
+  const [paymentId, setPaymentId] = useState("");
+
+  // Loading untuk direct payment
+  const [isLoading, setIsLoading] = useState(false);
+
   const { AppServices, URLs } = useApiContext();
 
   useEffect(() => {
@@ -84,6 +94,7 @@ const DetailsCourse = () => {
       .then((res) => {
         let result = res.data;
         setMainCourse(result);
+        console.log(result);
       })
       .catch((err) => {
         console.log(err);
@@ -120,10 +131,6 @@ const DetailsCourse = () => {
   };
 
   const handleAddToCart = () => {
-    // const cartPayload = {
-    //   courseId,
-    //   courseSchedule,
-    // };
     AppServices.addToCart(courseId, courseSchedule)
       .then((res) => {
         console.log(res);
@@ -132,6 +139,25 @@ const DetailsCourse = () => {
       .catch((err) => {
         console.log(err);
       });
+  };
+
+  const handleSubmit = () => {
+    // setIsLoading(true);
+    // navigate("/success-purchase");
+    let purchaseDate = new Date().toISOString();
+    AppServices.directPurchase(paymentId, purchaseDate, courseId)
+      .then((res) => {
+        setTimeout(() => {
+          navigate("/success-purchase");
+        }, 1000);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        // setIsLoading(false);
+      });
+    console.log(paymentId);
   };
 
   return (
@@ -187,7 +213,7 @@ const DetailsCourse = () => {
                 fontWeight={400}
                 color={"#828282"}
               >
-                {mainCourse.category.name}
+                {mainCourse.category.tagName}
               </Typography>
               <Typography
                 fontSize={"1.5rem"}
@@ -256,6 +282,7 @@ const DetailsCourse = () => {
                   marginY: "0.25rem",
                 }}
                 variant="contained"
+                onClick={() => setDialogOpen(true)}
               >
                 Beli Sekarang
               </Button>
@@ -330,6 +357,12 @@ const DetailsCourse = () => {
         </Box>
       </Box>
       <Footer />
+      <PaymentDialog
+        open={dialogOpen}
+        handleClose={() => setDialogOpen(false)}
+        onSubmit={handleSubmit}
+        setPaymentId={setPaymentId}
+      />
     </>
   );
 };

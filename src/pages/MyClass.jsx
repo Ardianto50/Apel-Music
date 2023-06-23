@@ -1,26 +1,49 @@
 import { Box, Grid, List } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ListClass } from "../assets/components/my_class/ListClass";
 import Footer from "../assets/components/Footer";
 import Navbar from "../assets/components/Navbar";
 import eno from "../assets/img/eno-netral.png";
 import orgMainBiola from "../assets/img/orang-main-biola.png";
+import { useApiContext } from "../context/ApiProvider";
+import { formatDate } from "../utility/dateFormat";
 
 export const MyClass = () => {
-  const dummyData = [
+  const { AppServices, URLs } = useApiContext();
+
+  const [pageSize, setPageSize] = useState(6);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [courses, setCourses] = useState([
     {
-      img: eno,
-      category: "Drum",
-      name: "Kursus Drummer Special Coach (Eno Netral)",
-      schedule: "Senin, 25 Juli 2022",
+      courseId: "",
+      courseName: "",
+      courseImage: "",
+      courseSchedule: "",
+      categoryId: "",
+      categoryname: "",
+      purchasePrice: 0,
     },
-    {
-      img: orgMainBiola,
-      category: "Biola",
-      name: "Biola Mid-Level Course",
-      schedule: "Sabtu, 23 Juli 2022",
-    },
-  ];
+  ]);
+
+  useEffect(() => {
+    setCourses([]);
+
+    let params = {
+      PageSize: pageSize,
+      CurrentPage: currentPage,
+    };
+
+    AppServices.getMyClass(params)
+      .then((res) => {
+        let result = res?.data;
+        let items = result?.items;
+        setCourses(items);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [AppServices, URLs, pageSize, currentPage]);
 
   return (
     <>
@@ -39,7 +62,7 @@ export const MyClass = () => {
           marginBottom: "5rem",
         }}
       >
-        {dummyData.map((data, i) => (
+        {courses.map((course, i) => (
           <Box
             sx={{
               width: "100%",
@@ -48,7 +71,15 @@ export const MyClass = () => {
             }}
             key={i}
           >
-            <ListClass {...data} />
+            <ListClass
+              key={i}
+              id={course.courseId}
+              name={course.courseName}
+              category={course.categoryname}
+              img={URLs.IMG_URL + course.courseImage}
+              price={course.purchasePrice}
+              schedule={formatDate(course.courseSchedule)}
+            />
           </Box>
         ))}
       </Box>

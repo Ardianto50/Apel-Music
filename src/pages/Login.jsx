@@ -158,6 +158,7 @@ export const Login = () => {
                   fontFamily: "poppins",
                   cursor: "pointer",
                   textAlign: "end",
+                  color: "blue",
                 }}
               >
                 Daftar disini
