@@ -26,6 +26,10 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
+import AdminPage from "../pages/Admin View/AdminPage";
+import AdminInvoice from "../pages/Admin View/AdminInvoice";
+import AdminPayment from "../pages/Admin View/AdminPayment";
+import AdminUser from "../pages/Admin View/AdminUser";
 
 const AuthElement = ({ children }) => {
   const navigate = useNavigate();
