@@ -110,6 +110,13 @@ const AppRouter = () => {
           element={protectedComp(<DetailsInvoice />)}
         />
         {/* END: Protected Route */}
+
+        {/* START: Admin Route */}
+        <Route path="/admin" element={<AdminPage />} />
+        <Route path="/admin/invoices" element={<AdminInvoice />} />
+        <Route path="/admin/payment-methods" element={<AdminPayment />} />
+        <Route path="/admin/users" element={<AdminUser />} />
+        {/* END: Admin Route */}
       </Routes>
       <Dialog
         open={GlobalDialogUtil.globalDialog}
