@@ -29,6 +29,10 @@ import {
 } from "@mui/material";
 import AppTable from "../../assets/components/AppTable";
 import axios from "axios";
+import { useState } from "react";
+import { useApiContext } from "../../context/ApiProvider";
+import CommonDialog from "../../assets/components/dialogs/CommonDialog";
+import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 // import Chart from "./Chart";
 // import Deposits from "./Deposits";
 // import Orders from "./Orders";
@@ -101,209 +105,72 @@ const Drawer = styled(MuiDrawer, {
 const defaultTheme = createTheme();
 
 export default function AdminUser() {
-  const [open, setOpen] = React.useState(false);
-  const [edit, setEdit] = React.useState(false);
-  const [data, setData] = React.useState([]);
-
-  React.useEffect(() => {
-    const FetchData = async () => {
-      try {
-        const response = await axios.get("url api");
-        const result = response.data;
-
-        setData(result);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    FetchData();
-  }, []);
+  const [openDrawer, setOpenDrawer] = React.useState(false);
 
   const toggleDrawer = () => {
-    setOpen(!open);
+    setOpenDrawer(!openDrawer);
   };
 
-  const [add, setAdd] = React.useState(false);
+  const { AdminServices, URLs } = useApiContext();
+
+  const [users, setUsers] = useState([
+    {
+      id: "",
+      fullName: "",
+      email: "",
+      inactive: "",
+      createdAt: "",
+      verifiedAt: null,
+    },
+  ]);
+
+  const [pageSize, setPageSize] = useState(6);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const [userRows, setUserRows] = useState([]);
+
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [editedId, setEditedId] = useState("");
+  const [eFullName, setEFullname] = useState("");
+  const [eEmail, setEEmail] = useState("");
+  const [ePassword, setEPassword] = useState("");
+  const [eConfirmPassword, setEConfirmPassword] = useState("");
+  const [eActive, setEActive] = useState(false);
+
+  const [openAddForm, setOpenAddForm] = useState(false);
+  const [openEditForm, setOpenEditForm] = useState(false);
+  const [openChagePassword, setOpenChangePassword] = useState(false);
 
   const handleAddUsers = () => {
-    setAdd(true);
+    setOpenAddForm(true);
   };
 
-  const handleCloseAddUsers = () => {
-    setAdd(false);
-  };
+  const [fieldErrors, setFieldErrors] = useState({
+    FullName: [],
+    Email: [],
+    Password: [],
+    ConfirmPassword: [],
+  });
 
-  const editUser = () => {};
+  const [nonFieldErrors, setNonFieldErrors] = useState(false);
 
-  const handleEdit = () => {
-    setEdit(true);
-  };
-  const handleEditCls = () => {
-    setEdit(false);
-  };
-
-  const DialogBoxEdit = ({ open, onClose, onSave }) => {
-    const [isActive, setIsActive] = React.useState(true);
-
-    const handleSwitchChange = () => {
-      setIsActive(!isActive);
-    };
-    return (
-      <Dialog open={open} onClose={onClose}>
-        <DialogTitle>Edit User</DialogTitle>
-        <DialogContent sx={{ width: "50vh" }}>
-          <Grid item marginY={2}>
-            <TextField
-              id="Username"
-              label="User Name"
-              variant="outlined"
-              type="text"
-              fullWidth
-            />
-          </Grid>
-          <Grid item marginY={2}>
-            <TextField
-              id="Email"
-              label="Email"
-              variant="outlined"
-              type="text"
-              fullWidth
-            />
-          </Grid>
-          <Grid item marginY={2}>
-            <TextField
-              id="Password"
-              label="Password"
-              variant="outlined"
-              type="password"
-              fullWidth
-            />
-          </Grid>
-          <Grid item marginY={2}>
-            <TextField
-              id="ConfirmPassword"
-              label="Confirm Password"
-              variant="outlined"
-              type="password"
-              fullWidth
-            />
-          </Grid>
-          <Grid item marginY={2}>
-            <Switch
-              checked={isActive}
-              onChange={handleSwitchChange}
-              color="primary"
-            />
-            {isActive ? "Active" : "Inactive"}
-          </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onClose} sx={{ color: "black" }}>
-            Cancel
-          </Button>
-          <Button
-            onClick={onSave}
-            variant="contained"
-            sx={{
-              bgcolor: "#F2C94C",
-              "&:hover": { bgcolor: "#FFCD38" },
-            }}
-          >
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
-    );
-  };
-
-  const DialogBoxAdd = ({ open, onClose, onSave }) => {
-    return (
-      <Dialog open={open} onClose={onClose}>
-        <DialogTitle>Add User</DialogTitle>
-        <DialogContent sx={{ width: "50vh" }}>
-          <Grid item marginY={2}>
-            <TextField
-              id="Username"
-              label="User Name"
-              variant="outlined"
-              type="text"
-              fullWidth
-            />
-          </Grid>
-          <Grid item marginY={2}>
-            <TextField
-              id="Email"
-              label="Email"
-              variant="outlined"
-              type="text"
-              fullWidth
-            />
-          </Grid>
-          <Grid item marginY={2}>
-            <TextField
-              id="Password"
-              label="Password"
-              variant="outlined"
-              type="password"
-              fullWidth
-            />
-          </Grid>
-          <Grid item marginY={2}>
-            <TextField
-              id="ConfirmPassword"
-              label="Confirm Password"
-              variant="outlined"
-              type="password"
-              fullWidth
-            />
-          </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onClose} sx={{ color: "black" }}>
-            Cancel
-          </Button>
-          <Button
-            onClick={onSave}
-            variant="contained"
-            sx={{
-              bgcolor: "#F2C94C",
-              "&:hover": { bgcolor: "#FFCD38" },
-            }}
-          >
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
-    );
-  };
-
-  const Users = [
-    {
-      Id: "1234",
-      Email: "example@mail.com",
-      Name: "User Example",
-      Status: true,
-    },
-    {
-      Id: "4321",
-      Email: "example2@mail.com",
-      Name: "User Example 2",
-      Status: false,
-    },
-  ];
-
-  const UserData = Users.map((user) => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const convertUserToRow = (user) => {
     return {
-      Name: user.Name,
-      Email: user.Email,
+      Name: user?.fullName,
+      Email: user?.email,
       Status: (
         <Button
           variant="contained"
-          color={user.Status ? "success" : "error"}
+          color={user?.inactive ? "error" : "success"}
           sx={{ width: "5rem" }}
         >
-          {user.Status ? "Active" : "Inactive"}
+          {user?.inactive ? "Inactive" : "Active"}
         </Button>
       ),
       Action: (
@@ -311,30 +178,222 @@ export default function AdminUser() {
           <Button
             variant="contained"
             sx={{
-              bgcolor: "#F2C94C",
-              "&:hover": { bgcolor: "#FFCD38" },
+              minWidth: "7rem",
             }}
-            onClick={handleEdit}
+            onClick={() => handleEdit(user?.id)}
           >
             Edit
           </Button>
-          <DialogBoxEdit
-            open={edit}
-            onClose={handleEditCls}
-            onSave={handleEditCls}
-          />
+          <Button
+            variant="outlined"
+            sx={{
+              minWidth: "4rem",
+              marginLeft: "0.5rem",
+            }}
+            onClick={() => handleChangePassword(user?.id)}
+          >
+            New Pass
+          </Button>
         </>
       ),
     };
-  });
+  };
+
+  const refreshPage = () => {
+    let params = {
+      PageSize: pageSize,
+      CurrentPage: currentPage,
+    };
+
+    AdminServices.getUsers(params)
+      .then((res) => {
+        let result = res.data.items;
+        let rows = [];
+        if (result) {
+          rows = result?.map((val) => convertUserToRow(val));
+        }
+        setUserRows(rows);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  React.useEffect(() => {
+    let params = {
+      PageSize: pageSize,
+      CurrentPage: currentPage,
+    };
+
+    AdminServices.getUsers(params)
+      .then((res) => {
+        let result = res.data.items;
+        let rows = [];
+        if (result) {
+          rows = result?.map((val) => convertUserToRow(val));
+        }
+        setUserRows(rows);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [AdminServices, pageSize, currentPage]);
+
+  const handleEditUser = () => {
+    clearErrorInfo();
+    setIsLoading(false);
+
+    const params = {
+      fullName: eFullName,
+      inactive: !eActive,
+    };
+
+    AdminServices.editUser(editedId, params)
+      .then((res) => {
+        let result = res?.data;
+        refreshPage();
+        setOpenEditForm(false);
+      })
+      .catch((err) => {
+        console.log(err.response);
+      });
+  };
+
+  // untuk set setiap field pada edit form dengan property dari user yang akan diedit
+  const prepareEditField = (id) => {
+    AdminServices.getUserDetail(id)
+      .then((res) => {
+        let result = res?.data;
+        setEFullname(result?.fullName);
+        setEEmail(result?.email);
+        setEActive(result?.inactive == null);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleEdit = (id) => {
+    clearEditFormFields();
+    clearErrorInfo();
+    setEditedId(id);
+    setOpenEditForm(true);
+
+    prepareEditField(id);
+  };
+
+  const handleChangePassword = (id) => {
+    setEditedId(id);
+
+    clearEditFormFields();
+    clearErrorInfo();
+    setOpenChangePassword(true);
+    prepareEditField(id);
+  };
+
+  const handleChangePasswordUser = (id) => {
+    clearErrorInfo();
+    setIsLoading(false);
+
+    const params = {
+      password: ePassword,
+      confirmPassword: eConfirmPassword,
+    };
+
+    AdminServices.editUserPassword(editedId, params)
+      .then((res) => {
+        let result = res?.data;
+        setOpenChangePassword(false);
+        refreshPage();
+      })
+      .catch((err) => {
+        const status = err.response.status;
+        if (status === 400) {
+          const errors = err.response.data.errors;
+          setFieldErrors({ ...fieldErrors, ...errors });
+        }
+
+        if (status > 400 && status < 500) {
+          const errors = err?.response?.data;
+          setNonFieldErrors(errors);
+        }
+      });
+  };
+
+  const handleAddUser = () => {
+    clearErrorInfo();
+    setIsLoading(false);
+
+    AdminServices.addUser(fullName, email, password, confirmPassword)
+      .then((res) => {
+        setOpenAddForm(false);
+        clearAddFormFields();
+        setTimeout(() => {
+          refreshPage();
+        }, 2000);
+      })
+      .catch((err) => {
+        // console.log(err);
+        const status = err.response.status;
+        if (status === 400) {
+          const errors = err.response.data.errors;
+          setFieldErrors({ ...fieldErrors, ...errors });
+        }
+
+        if (status > 400 && status < 500) {
+          const errors = err?.response?.data;
+          setNonFieldErrors(errors);
+        }
+      });
+  };
+
+  const clearAddFormFields = () => {
+    setFullName("");
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+  };
+
+  const clearEditFormFields = () => {
+    setEFullname("");
+    setEEmail("");
+    setEPassword("");
+    setEConfirmPassword("");
+  };
+
+  const clearErrorInfo = () => {
+    setFieldErrors({
+      FullName: [],
+      Email: [],
+      Password: [],
+      ConfirmPassword: [],
+    });
+    setNonFieldErrors(false);
+  };
 
   const columnTable = ["Name", "Email", "Status", "Action"];
+
+  const goLeft = () => {
+    if (currentPage !== 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const goRight = () => {
+    if (userRows.length === pageSize) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
 
   return (
     <ThemeProvider theme={defaultTheme}>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
-        <AppBar position="absolute" open={open} sx={{ bgcolor: "#F2C94C" }}>
+        <AppBar
+          position="absolute"
+          open={openDrawer}
+          sx={{ bgcolor: "#F2C94C" }}
+        >
           <Toolbar
             sx={{
               pr: "24px", // keep right padding when drawer closed
@@ -347,7 +406,7 @@ export default function AdminUser() {
               onClick={toggleDrawer}
               sx={{
                 marginRight: "36px",
-                ...(open && { display: "none" }),
+                ...(openDrawer && { display: "none" }),
               }}
             >
               <MenuIcon />
@@ -366,7 +425,7 @@ export default function AdminUser() {
             </IconButton>
           </Toolbar>
         </AppBar>
-        <Drawer variant="permanent" open={open}>
+        <Drawer variant="permanent" open={openDrawer}>
           <Toolbar
             sx={{
               display: "flex",
@@ -419,13 +478,31 @@ export default function AdminUser() {
                   >
                     Add User
                   </Button>
-                  <DialogBoxAdd
-                    open={add}
-                    onClose={handleCloseAddUsers}
-                    onSave={handleCloseAddUsers}
-                  />
                 </Grid>
-                <AppTable rows={UserData} columnsLabel={columnTable} />
+
+                {/* START: MAIN TABLE */}
+                <AppTable rows={userRows} columnsLabel={columnTable} />
+                {/* END: MAIN TABLE */}
+
+                {/* START: PAGINATION */}
+                <Box
+                  sx={{
+                    width: "200px",
+                    display: "flex",
+                    justifyContent: "space-evenly",
+                    height: "50px",
+                    margin: "auto",
+                    marginTop: "0.75rem",
+                  }}
+                >
+                  <Button variant="outlined" onClick={goLeft}>
+                    <ChevronLeftIcon />
+                  </Button>
+                  <Button variant="outlined" onClick={goRight}>
+                    <ChevronRightIcon />
+                  </Button>
+                </Box>
+                {/* END: PAGINATION */}
               </Grid>
 
               <Grid item xs={12}>
@@ -438,6 +515,129 @@ export default function AdminUser() {
           </Container>
         </Box>
       </Box>
+      {/* START: Add Form Dialog */}
+      <CommonDialog
+        open={openAddForm}
+        onClose={() => setOpenAddForm(false)}
+        onSubmit={handleAddUser}
+        title={"Add User"}
+      >
+        <Grid item marginY={2}>
+          <TextField
+            id="Username"
+            label="User Name"
+            variant="outlined"
+            type="text"
+            fullWidth
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            error={fieldErrors.FullName.length !== 0}
+            helperText={fieldErrors.FullName[0]}
+          />
+        </Grid>
+        <Grid item marginY={2}>
+          <TextField
+            id="Email"
+            label="Email"
+            variant="outlined"
+            type="text"
+            fullWidth
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            error={fieldErrors.Email.length !== 0}
+            helperText={fieldErrors.Email[0]}
+          />
+        </Grid>
+        <Grid item marginY={2}>
+          <TextField
+            id="Password"
+            label="Password"
+            variant="outlined"
+            type="password"
+            fullWidth
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            error={fieldErrors.Password.length !== 0}
+            helperText={fieldErrors.Password[0]}
+          />
+        </Grid>
+        <Grid item marginY={2}>
+          <TextField
+            id="ConfirmPassword"
+            label="Confirm Password"
+            variant="outlined"
+            type="password"
+            fullWidth
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            error={fieldErrors.ConfirmPassword.length !== 0}
+            helperText={fieldErrors.ConfirmPassword[0]}
+          />
+        </Grid>
+      </CommonDialog>
+      {/* START: Add Form Dialog */}
+
+      <CommonDialog
+        open={openEditForm}
+        onClose={() => setOpenEditForm(false)}
+        onSubmit={handleEditUser}
+        title={"Edit User : " + eEmail}
+      >
+        <Grid item marginY={2}>
+          <TextField
+            id="Username"
+            label="User Name"
+            variant="outlined"
+            type="text"
+            fullWidth
+            value={eFullName}
+            onChange={(e) => setEFullname(e.target.value)}
+            error={fieldErrors.FullName.length !== 0}
+            helperText={fieldErrors.FullName[0]}
+          />
+        </Grid>
+        <Grid item marginY={2}>
+          <Switch
+            checked={eActive}
+            onClick={() => setEActive(!eActive)}
+            color="primary"
+          />
+          {eActive ? "Active" : "Inactive"}
+        </Grid>
+      </CommonDialog>
+      <CommonDialog
+        open={openChagePassword}
+        onClose={() => setOpenChangePassword(false)}
+        onSubmit={handleChangePasswordUser}
+        title={"Change Password user : " + eEmail}
+      >
+        <Grid item marginY={2}>
+          <TextField
+            id="Password"
+            label="Password"
+            variant="outlined"
+            type="password"
+            fullWidth
+            value={ePassword}
+            onChange={(e) => setEPassword(e.target.value)}
+            error={fieldErrors.Password.length !== 0}
+            helperText={fieldErrors.Password[0]}
+          />
+        </Grid>
+        <Grid item marginY={2}>
+          <TextField
+            id="ConfirmPassword"
+            label="Confirm Password"
+            variant="outlined"
+            type="password"
+            fullWidth
+            value={eConfirmPassword}
+            onChange={(e) => setEConfirmPassword(e.target.value)}
+            error={fieldErrors.ConfirmPassword.length !== 0}
+            helperText={fieldErrors.ConfirmPassword[0]}
+          />
+        </Grid>
+      </CommonDialog>
     </ThemeProvider>
   );
 }

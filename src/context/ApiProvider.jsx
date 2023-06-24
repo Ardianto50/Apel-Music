@@ -153,7 +153,10 @@ const ApiProvider = ({ children }) => {
 
   // START: Check is Admin/User function
   const isRoleAdmin = () => {
-    return localStorage.getItem("user_role").toLowerCase() === "admin";
+    if (isLoggedIn()) {
+      return localStorage.getItem("user_role").toLowerCase() === "admin";
+    }
+    return false;
   };
 
   const isRoleUser = () => {
@@ -357,9 +360,146 @@ const ApiProvider = ({ children }) => {
     getMyClass,
   };
 
+  // ========================== ADMIN SERVICES =========================
+
+  const editPayment = async (paymentId, params) => {
+    axios.defaults.headers.common = getAuthorization();
+
+    const payload = new FormData();
+    if (params?.name) payload.append("Name", params?.name);
+    if (params?.image) payload.append("Image", params?.image);
+    if (params?.inactive) payload.append("Inactive", params?.inactive);
+    return await axios.put(URLs.BASE_URL + "Payment/" + paymentId, payload, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  };
+
+  const getPaymentDetail = async (paymentId) => {
+    axios.defaults.headers.common = getAuthorization();
+    return await axios.get(URLs.BASE_URL + "Payment/" + paymentId);
+  };
+
+  const getPaymentsAdmin = async () => {
+    axios.defaults.headers.common = getAuthorization();
+    return await axios.get(URLs.BASE_URL + "Payment/ForAdmin");
+  };
+
+  const addPayment = async (params) => {
+    axios.defaults.headers.common = getAuthorization();
+
+    const payload = new FormData();
+    if (params?.name) payload.append("Name", params?.name);
+    if (params?.image) payload.append("Image", params?.image);
+    return await axios.post(URLs.BASE_URL + "Payment", payload, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  };
+
+  const getAdminInvoices = async (params) => {
+    let PageSize = params?.PageSize || 5;
+    let CurrentPage = params?.CurrentPage || 1;
+    let Direction = params?.Direction || "DESC";
+    let SortBy = params?.SortBy || "invoice_number";
+    let Keyword = params?.Keyword || "";
+    const finalParam = {
+      PageSize,
+      CurrentPage,
+      Direction,
+      SortBy,
+      Keyword,
+    };
+
+    axios.defaults.headers.common = getAuthorization();
+
+    return await axios.get(URLs.BASE_URL + "Purchase/Invoice/Admin", {
+      params: finalParam,
+    });
+  };
+
+  const editUserPassword = async (userId, params) => {
+    axios.defaults.headers.common = getAuthorization();
+    const payload = {};
+    payload["password"] = params?.password;
+    payload["confirmPassword"] = params?.confirmPassword;
+    return await axios.put(
+      URLs.AUTH_URL + "Admin/EditPassword/" + userId,
+      payload
+    );
+  };
+
+  const editUser = async (userId, params) => {
+    axios.defaults.headers.common = getAuthorization();
+    const payload = {};
+    payload["fullName"] = params?.fullName;
+    payload["inactive"] = params?.inactive;
+    return await axios.put(URLs.AUTH_URL + "Admin/EditUser/" + userId, payload);
+  };
+
+  const getUserDetail = async (userId) => {
+    axios.defaults.headers.common = getAuthorization();
+    return await axios.get(URLs.AUTH_URL + "Admin/GetUser/" + userId);
+  };
+
+  const addUser = async (fullName, email, password, confirmPassword) => {
+    const payload = {
+      fullName,
+      email,
+      password,
+      confirmPassword,
+    };
+
+    axios.defaults.headers.common = getAuthorization();
+    return await axios.post(URLs.AUTH_URL + "Admin/AddUser", payload);
+  };
+
+  const getUsers = async (params) => {
+    let PageSize = params?.PageSize || 5;
+    let CurrentPage = params?.CurrentPage || 1;
+    let Direction = params?.Direction;
+    let SortBy = params?.SortBy || "";
+    let Keyword = params?.Keyword || "";
+    const finalParam = {
+      PageSize,
+      CurrentPage,
+    };
+
+    if (Direction) finalParam["Direction"] = Direction;
+    if (SortBy) finalParam["SortBy"] = SortBy;
+    if (Keyword) finalParam["Keyword"] = Keyword;
+
+    axios.defaults.headers.common = getAuthorization();
+    return await axios.get(URLs.AUTH_URL + "Admin", {
+      params: finalParam,
+    });
+  };
+
+  const AdminServices = {
+    getUsers,
+    addUser,
+    getUserDetail,
+    editUser,
+    editUserPassword,
+    getAdminInvoices,
+    addPayment,
+    getPaymentsAdmin,
+    getPaymentDetail,
+    editPayment,
+  };
+
   return (
     <ApiContext.Provider
-      value={{ URLs, AuthServices, AppServices, GlobalDialogUtil }}
+      value={{
+        URLs,
+        AuthServices,
+        AppServices,
+        AdminServices,
+        GlobalDialogUtil,
+        editUserPassword,
+      }}
     >
       {children}
     </ApiContext.Provider>

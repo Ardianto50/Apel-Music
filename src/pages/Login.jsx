@@ -2,6 +2,7 @@ import {
   Alert,
   AlertTitle,
   Backdrop,
+  Box,
   Button,
   CircularProgress,
   Grid,
@@ -150,20 +151,29 @@ export const Login = () => {
             >
               Masuk
             </Button>
-            <Typography paddingTop={3} fontFamily={"poppins"}>
-              Belum punya akun?
+
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                paddingTop: "0.75rem",
+              }}
+            >
+              <Typography whiteSpace={"normal"} fontFamily={"poppins"}>
+                Belum punya akun?
+              </Typography>
               <Link
                 to={"/register"}
-                sx={{
-                  fontFamily: "poppins",
+                style={{
                   cursor: "pointer",
                   textAlign: "end",
-                  color: "blue",
+                  color: "#1565C0",
                 }}
               >
                 Daftar disini
               </Link>
-            </Typography>
+            </Box>
           </Stack>
         </Grid>
       </Grid>

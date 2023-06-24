@@ -64,6 +64,24 @@ const ProtectElement = ({ children }) => {
   return <>{children}</>;
 };
 
+const adminComp = (element) => {
+  return <AdminElement>{element}</AdminElement>;
+};
+
+const AdminElement = ({ children }) => {
+  const navigate = useNavigate();
+  const { AuthServices } = useApiContext();
+
+  useEffect(() => {
+    // Kalo belum login atau bukan admin, maka akan diarahkan ke login page
+    if (!AuthServices.isRoleAdmin()) {
+      navigate("/login");
+    }
+  }, [navigate, AuthServices]);
+
+  return <>{children}</>;
+};
+
 const protectedComp = (element) => {
   return <ProtectElement>{element}</ProtectElement>;
 };
@@ -116,10 +134,13 @@ const AppRouter = () => {
         {/* END: Protected Route */}
 
         {/* START: Admin Route */}
-        <Route path="/admin" element={<AdminPage />} />
-        <Route path="/admin/invoices" element={<AdminInvoice />} />
-        <Route path="/admin/payment-methods" element={<AdminPayment />} />
-        <Route path="/admin/users" element={<AdminUser />} />
+        <Route path="/admin" element={adminComp(<AdminPage />)} />
+        <Route path="/admin/invoices" element={adminComp(<AdminInvoice />)} />
+        <Route
+          path="/admin/payment-methods"
+          element={adminComp(<AdminPayment />)}
+        />
+        <Route path="/admin/users" element={adminComp(<AdminUser />)} />
         {/* END: Admin Route */}
       </Routes>
       <Dialog

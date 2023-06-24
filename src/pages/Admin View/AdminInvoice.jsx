@@ -27,6 +27,10 @@ import {
   TextField,
 } from "@mui/material";
 import AppTable from "../../assets/components/AppTable";
+import { useState } from "react";
+import { useEffect } from "react";
+import { useApiContext } from "../../context/ApiProvider";
+import { formatDate } from "../../utility/dateFormat";
 // import Chart from "./Chart";
 // import Deposits from "./Deposits";
 // import Orders from "./Orders";
@@ -105,14 +109,6 @@ export default function AdminInvoice() {
   };
 
   const [add, setAdd] = React.useState(false);
-
-  const handleAddUsers = () => {
-    setAdd(true);
-  };
-
-  const handleCloseAddUsers = () => {
-    setAdd(false);
-  };
 
   const data = [
     {
@@ -194,6 +190,103 @@ export default function AdminInvoice() {
     "Total Harga",
     "Action",
   ];
+
+  const [invoices, setInvoices] = useState([
+    {
+      id: 0,
+      invoiceNumber: "",
+      userId: "",
+      purchaseDate: "",
+      quantity: 0,
+      totalPrice: 0,
+      paymentId: "",
+      payment: {
+        id: "",
+        image: null,
+        name: "",
+        inactive: "",
+      },
+    },
+  ]);
+
+  const [invoiceRows, setInvoiceRows] = useState([
+    {
+      No: 0,
+      NoInvoice: "",
+      TglBeli: "",
+      JmlKursus: 0,
+      TotalHarga: rupiah(0),
+      Btn: (
+        <>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              width: "180px",
+              borderRadius: "0.5rem",
+              fontSize: "1rem",
+              fontWeight: 500,
+            }}
+            href="/invoice/rincian-invoice/"
+          >
+            Rincian
+          </Button>
+        </>
+      ),
+    },
+  ]);
+
+  const { AdminServices, URLs } = useApiContext();
+
+  const [pageSize, setPageSize] = useState(6);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const convertInvoiceToRows = (invoice) => {
+    return {
+      No: invoice?.id,
+      NoInvoice: invoice?.invoiceNumber,
+      TglBeli: formatDate(invoice?.purchaseDate),
+      JmlKursus: invoice?.quantity,
+      TotalHarga: rupiah(invoice?.totalPrice),
+      Btn: (
+        <>
+          <Button
+            variant="contained"
+            color="primary"
+            sx={{
+              width: "180px",
+              borderRadius: "0.5rem",
+              fontSize: "1rem",
+              fontWeight: 500,
+            }}
+            href={"/invoice/rincian-invoice/" + invoice?.id}
+          >
+            Rincian
+          </Button>
+        </>
+      ),
+    };
+  };
+
+  useEffect(() => {
+    setInvoiceRows([]);
+    setInvoices([]);
+    let params = {
+      PageSize: pageSize,
+      CurrentPage: currentPage,
+    };
+    AdminServices.getAdminInvoices(params)
+      .then((res) => {
+        let result = res.data.items;
+        if (result) {
+          let rows = result.map((inv) => convertInvoiceToRows(inv));
+          setInvoiceRows(rows);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, [AdminServices, pageSize, currentPage]);
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -284,7 +377,7 @@ export default function AdminInvoice() {
                     height: " auto",
                   }}
                 > */}
-                <AppTable rows={data} columnsLabel={columnsLabel} />
+                <AppTable rows={invoiceRows} columnsLabel={columnsLabel} />
                 {/* </Paper> */}
               </Grid>
 

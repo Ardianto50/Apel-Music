@@ -2,6 +2,7 @@ import {
   Alert,
   AlertTitle,
   Backdrop,
+  Box,
   Button,
   CircularProgress,
   Grid,
@@ -53,8 +54,6 @@ export const Register = () => {
         clearInputFields();
       })
       .catch((err) => {
-        // console.log(err);
-
         const status = err.response.status;
         if (status === 400) {
           const errors = err.response.data.errors;
@@ -194,21 +193,20 @@ export const Register = () => {
                   Daftar
                 </Button>
               </Grid>
-              <Grid item md={4} sx={{ display: { md: "flex", xs: "none" } }}>
-                <Typography fontFamily={"poppins"}>
-                  Sudah punya akun?
-                  <Link
-                    to={"/login"}
-                    sx={{
-                      fontFamily: "poppins",
-                      cursor: "pointer",
-                      textAlign: "end",
-                    }}
-                  >
-                    Login disini
-                  </Link>
-                </Typography>
-              </Grid>
+              <Typography whiteSpace={"normal"} fontFamily={"poppins"}>
+                Sudah punya akun?
+                <Link
+                  to={"/login"}
+                  style={{
+                    cursor: "pointer",
+                    textAlign: "end",
+                    color: "#1565C0",
+                    marginLeft: "0.5rem",
+                  }}
+                >
+                  Login disini
+                </Link>
+              </Typography>
               <Grid item md={4} bgcolor={"aqua"}></Grid>
             </Stack>
           </Stack>

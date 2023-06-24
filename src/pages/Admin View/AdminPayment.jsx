@@ -25,10 +25,16 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
+  Input,
   Stack,
+  Switch,
   TextField,
 } from "@mui/material";
 import { Group } from "@mui/icons-material";
+import { useApiContext } from "../../context/ApiProvider";
+import { useState } from "react";
+import AppTable from "../../assets/components/AppTable";
+import CommonDialog from "../../assets/components/dialogs/CommonDialog";
 // import Chart from "./Chart";
 // import Deposits from "./Deposits";
 // import Orders from "./Orders";
@@ -100,6 +106,85 @@ const Drawer = styled(MuiDrawer, {
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
+const PaymentList = ({ name, image }) => {
+  return (
+    <>
+      <Stack
+        direction={"row"}
+        justifyContent={"space-between"}
+        alignItems={"center"}
+        bgcolor={"aqua"}
+        marginY={1}
+        paddingX={4}
+      >
+        <Stack alignItems={"center"} direction={"row"}>
+          <img src={image} alt="" />
+          <Typography variant="h6" paddingX={2}>
+            {name}
+          </Typography>
+        </Stack>
+        <Grid item>
+          <Button
+            variant="contained"
+            sx={{
+              bgcolor: "#F2C94C",
+              "&:hover": { bgcolor: "#FFCD38" },
+            }}
+          >
+            Edit
+          </Button>
+        </Grid>
+      </Stack>
+    </>
+  );
+};
+
+const DialogAdd = ({ open, onClose, onSave }) => {
+  return (
+    <Dialog open={open} onClose={onClose}>
+      <DialogTitle>Add Payment Method</DialogTitle>
+      <DialogContent sx={{ width: "50vh" }}>
+        <Grid item marginY={2}>
+          <TextField
+            id="PaymentName"
+            label="Payment Name"
+            variant="outlined"
+            fullWidth
+            type="text"
+          />
+        </Grid>
+        <Grid item marginY={2}>
+          <TextField
+            type="file"
+            // onChange={handleImageChange}
+            label="Select Image"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            fullWidth
+            margin="normal"
+          />
+        </Grid>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} sx={{ color: "black" }}>
+          Cancel
+        </Button>
+        <Button
+          onClick={onSave}
+          variant="contained"
+          sx={{
+            bgcolor: "#F2C94C",
+            "&:hover": { bgcolor: "#FFCD38" },
+          }}
+        >
+          Save
+        </Button>
+      </DialogActions>
+    </Dialog>
+  );
+};
+
 export default function AdminPayment() {
   const [open, setOpen] = React.useState(false);
   const [selectedImage, setSelectedImage] = React.useState(null);
@@ -110,78 +195,185 @@ export default function AdminPayment() {
 
   const [add, setAdd] = React.useState(false);
 
-  const handleAddPayment = () => {
-    setAdd(true);
-  };
-
   const handleCloseAddPayment = () => {
     setAdd(false);
   };
 
-  const handleImageChange = (event) => {
-    const file = event.target.files[0];
-    setSelectedImage(file);
-  };
+  const columnTable = ["Image", "Name", "Active", "Action"];
 
-  const DialogAdd = ({ open, onClose, onSave }) => {
-    return (
-      <Dialog open={open} onClose={onClose}>
-        <DialogTitle>Add Payment Method</DialogTitle>
-        <DialogContent sx={{ width: "50vh" }}>
-          <Grid item marginY={2}>
-            <TextField
-              id="PaymentName"
-              label="Payment Name"
-              variant="outlined"
-              fullWidth
-              type="text"
-            />
-          </Grid>
-          <Grid item marginY={2}>
-            <TextField
-              type="file"
-              onChange={handleImageChange}
-              label="Select Image"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              fullWidth
-              margin="normal"
-            />
-          </Grid>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onClose} sx={{ color: "black" }}>
-            Cancel
-          </Button>
+  const [paymentRows, setPaymentRows] = useState([]);
+
+  const [pageSize, setPageSize] = useState(6);
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const { AdminServices, URLs } = useApiContext();
+
+  const [image, setImage] = useState(null);
+  const [editImage, setEditImage] = useState(null);
+  const [editedId, setEditedId] = useState("");
+  const [paymentName, setPaymentName] = useState("");
+  const [openAddPayment, setOpenAddPayment] = useState(false);
+  const [openEditPayment, setOpenEditPayment] = useState(false);
+  const [paymentActive, setPaymentActive] = useState(false);
+
+  const [fieldErrors, setFieldErrors] = useState({
+    Name: [],
+    Image: [],
+  });
+
+  const [nonFieldErrors, setNonFieldErrors] = useState(false);
+
+  const convertPaymentToRow = (payment) => {
+    return {
+      Image: (
+        <Box
+          component={"img"}
+          src={URLs.IMG_URL + payment?.image}
+          sx={{
+            height: { xs: "4rem", sm: "4rem", md: "3rem" },
+            width: { xs: "4rem", sm: "4rem", md: "3rem" },
+            borderRadius: "100%",
+            margin: "auto",
+          }}
+        />
+      ),
+      Name: payment?.name,
+      Status: (
+        <Button
+          variant="contained"
+          color={payment?.inactive ? "error" : "success"}
+          sx={{ width: "5rem" }}
+        >
+          {payment?.inactive ? "Inactive" : "Active"}
+        </Button>
+      ),
+      Action: (
+        <>
           <Button
-            onClick={onSave}
             variant="contained"
             sx={{
-              bgcolor: "#F2C94C",
-              "&:hover": { bgcolor: "#FFCD38" },
+              minWidth: "7rem",
             }}
+            onClick={() => handleEdit(payment?.id)}
           >
-            Save
+            Edit
           </Button>
-        </DialogActions>
-      </Dialog>
-    );
+        </>
+      ),
+    };
+  };
+
+  // TODO: Rapihin lagi untuk semua validasi, termasuk yang dari user, sama tambahin add new course
+  const prepareEditField = (paymentId) => {
+    AdminServices.getPaymentDetail(paymentId)
+      .then((res) => {
+        let result = res?.data;
+        setPaymentName(result?.name);
+        setEditImage(URLs.IMG_URL + result?.image);
+        setPaymentActive(!result?.inactive);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const handleEdit = (paymentId) => {
+    clearFields();
+    setEditedId(paymentId);
+    setOpenEditPayment(true);
+    prepareEditField(paymentId);
+  };
+
+  const handleAdd = () => {
+    setOpenAddPayment(true);
+    clearFields();
+  };
+
+  const refreshPage = () => {
+    AdminServices.getPaymentsAdmin()
+      .then((res) => {
+        let result = res?.data || [];
+        let rows = result.map((payment) => convertPaymentToRow(payment));
+        setPaymentRows(rows);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   useEffect(() => {
-    const fecthData = async () => {
-      try {
-        const response = await axios.get("https://localhost:7076/api/Payment");
-        setData(response.data);
-        console.log(response.data);
-      } catch {
-        console.log(Error);
-      }
-    };
+    refreshPage();
+  }, [AdminServices, pageSize, currentPage]);
 
-    fecthData();
-  }, []);
+  const clearFields = () => {
+    setEditedId("");
+    setPaymentName("");
+    setImage(null);
+    setEditImage(null);
+    setPaymentActive(false);
+  };
+
+  const clearErrorInfo = () => {
+    setFieldErrors({
+      Name: [],
+      Image: [],
+    });
+    setNonFieldErrors(false);
+  };
+
+  const handleAddPayment = () => {
+    clearErrorInfo();
+    const payload = {
+      name: paymentName,
+      image,
+    };
+    AdminServices.addPayment(payload)
+      .then((res) => {
+        setOpenAddPayment(false);
+        refreshPage();
+      })
+      .catch((err) => {
+        console.log(err);
+        const status = err.response?.status;
+        if (status === 400) {
+          const errors = err.response?.data?.errors;
+          setFieldErrors({ ...fieldErrors, ...errors });
+        }
+
+        if (status > 400 && status < 500) {
+          const errors = err?.response?.data;
+          setNonFieldErrors(errors);
+        }
+      });
+  };
+
+  const handleEditPayment = () => {
+    clearErrorInfo();
+    const payload = {
+      name: paymentName,
+      image,
+      inactive: !paymentActive,
+    };
+    AdminServices.editPayment(editedId, payload)
+      .then((res) => {
+        setOpenEditPayment(false);
+        refreshPage();
+        clearFields();
+      })
+      .catch((err) => {
+        console.log(err);
+        const status = err.response?.status;
+        if (status === 400) {
+          const errors = err.response?.data?.errors;
+          setFieldErrors({ ...fieldErrors, ...errors });
+        }
+
+        if (status > 400 && status < 500) {
+          const errors = err?.response?.data;
+          setNonFieldErrors(errors);
+        }
+      });
+  };
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -253,7 +445,7 @@ export default function AdminPayment() {
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
-              <Grid item xs={12} md={12} lg={12}>
+              <Grid sx={{ padding: "0.75rem" }} item xs={12} md={12} lg={12}>
                 <Grid
                   item
                   container
@@ -266,7 +458,7 @@ export default function AdminPayment() {
                   </Typography>
                   <Button
                     variant="contained"
-                    onClick={handleAddPayment}
+                    onClick={handleAdd}
                     sx={{
                       bgcolor: "#F2C94C",
                       "&:hover": { bgcolor: "#FFCD38" },
@@ -280,44 +472,7 @@ export default function AdminPayment() {
                     onSave={handleCloseAddPayment}
                   />
                 </Grid>
-
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: "flex",
-                    flexDirection: "column",
-                    height: 240,
-                  }}
-                >
-                  {data.map((value, index) => (
-                    <Stack
-                      direction={"row"}
-                      justifyContent={"space-between"}
-                      alignItems={"center"}
-                      bgcolor={"aqua"}
-                      marginY={1}
-                      paddingX={4}
-                    >
-                      <Stack alignItems={"center"} direction={"row"}>
-                        <img src={value.image} alt="" />
-                        <Typography variant="h6" paddingX={2}>
-                          {value.name}
-                        </Typography>
-                      </Stack>
-                      <Grid item>
-                        <Button
-                          variant="contained"
-                          sx={{
-                            bgcolor: "#F2C94C",
-                            "&:hover": { bgcolor: "#FFCD38" },
-                          }}
-                        >
-                          Edit
-                        </Button>
-                      </Grid>
-                    </Stack>
-                  ))}
-                </Paper>
+                <AppTable columnsLabel={columnTable} rows={paymentRows} />
               </Grid>
 
               {/* Recent Deposits */}
@@ -332,6 +487,106 @@ export default function AdminPayment() {
           </Container>
         </Box>
       </Box>
+
+      {/* START: Form Edit Payment */}
+      <CommonDialog
+        open={openEditPayment}
+        onClose={() => setOpenEditPayment(false)}
+        onSubmit={handleEditPayment}
+        title={"Edit Payment "}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            padding: "0.75rem",
+            gap: 5,
+          }}
+        >
+          <TextField
+            label="Name"
+            variant="outlined"
+            type="text"
+            fullWidth
+            value={paymentName}
+            onChange={(e) => setPaymentName(e.target.value)}
+          />
+          <Box
+            component={"img"}
+            src={
+              typeof editImage == "string" || editImage == null
+                ? editImage
+                : URL.createObjectURL(editImage)
+            }
+            sx={{
+              height: "5rem",
+              width: "5rem",
+              minHeight: "4rem",
+              border: "1px solid gray",
+              borderRadius: "0.5rem",
+            }}
+          />
+          <TextField
+            variant="outlined"
+            type="file"
+            fullWidth
+            onChange={(e) => setEditImage(e.currentTarget.files[0])}
+          />
+          <Box marginY={2}>
+            <Switch
+              checked={paymentActive}
+              onClick={() => setPaymentActive(!paymentActive)}
+              color="primary"
+            />
+            {paymentActive ? "Active" : "Inactive"}
+          </Box>
+        </Box>
+      </CommonDialog>
+      {/* END: Handle edit payment */}
+
+      {/* START: Handle add payment */}
+      <CommonDialog
+        open={openAddPayment}
+        onClose={() => setOpenAddPayment(false)}
+        onSubmit={handleAddPayment}
+        title={"Tambah payment method"}
+      >
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            padding: "0.75rem",
+            gap: 5,
+          }}
+        >
+          <TextField
+            label="Name"
+            variant="outlined"
+            type="text"
+            fullWidth
+            value={paymentName}
+            onChange={(e) => setPaymentName(e.target.value)}
+          />
+          <Box
+            component={"img"}
+            src={image && URL.createObjectURL(image)}
+            sx={{
+              height: "5rem",
+              width: "5rem",
+              minHeight: "4rem",
+              border: "1px solid gray",
+              borderRadius: "0.5rem",
+            }}
+          />
+          <TextField
+            variant="outlined"
+            type="file"
+            fullWidth
+            onChange={(e) => setImage(e.currentTarget.files[0])}
+          />
+        </Box>
+      </CommonDialog>
+      {/* START: Handle add payment */}
     </ThemeProvider>
   );
 }

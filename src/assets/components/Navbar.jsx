@@ -113,7 +113,11 @@ const Navbar = () => {
                   gap: 0,
                 }}
               >
-                <Button href="/register" variant="text" sx={{ color: "black" }}>
+                <Button
+                  href={AuthServices?.isRoleAdmin() ? "/admin" : "/login"}
+                  variant="text"
+                  sx={{ color: "black" }}
+                >
                   <PersonIcon fontSize={"medium"} />
                 </Button>
                 <Button
@@ -147,7 +151,7 @@ const Navbar = () => {
       <>
         {alreadyLogin ? (
           <>
-            <Link to={"/login"}>
+            <Link to={AuthServices?.isRoleAdmin() ? "/admin" : "/login"}>
               <MenuItem>Profil</MenuItem>
             </Link>
             <Link
