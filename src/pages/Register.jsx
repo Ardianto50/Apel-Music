@@ -57,6 +57,7 @@ export const Register = () => {
         const status = err.response.status;
         if (status === 400) {
           const errors = err.response.data.errors;
+          console.log(errors);
           setFieldErrors({ ...fieldErrors, ...errors });
         }
 

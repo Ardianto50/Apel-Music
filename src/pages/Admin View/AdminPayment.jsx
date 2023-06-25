@@ -351,7 +351,7 @@ export default function AdminPayment() {
     clearErrorInfo();
     const payload = {
       name: paymentName,
-      image,
+      image: editImage,
       inactive: !paymentActive,
     };
     AdminServices.editPayment(editedId, payload)

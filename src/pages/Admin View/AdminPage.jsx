@@ -85,7 +85,6 @@ const Drawer = styled(MuiDrawer, {
   },
 }));
 
-// TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
 
 export default function AdminPage() {
@@ -125,7 +124,7 @@ export default function AdminPage() {
             >
               Admin Dashboard
             </Typography>
-            <IconButton color="inherit">
+            <IconButton href="/logout" color="inherit">
               <LogoutIcon />
             </IconButton>
           </Toolbar>

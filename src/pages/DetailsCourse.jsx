@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../assets/components/Navbar";
 import {
+  Alert,
+  AlertTitle,
   Box,
   Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   FormControl,
+  FormHelperText,
   InputLabel,
   MenuList,
   Select,
@@ -86,6 +94,18 @@ const DetailsCourse = () => {
   // Loading untuk direct payment
   const [isLoading, setIsLoading] = useState(false);
 
+  // Error lain lain
+  const [nonFieldErrors, setNonFieldErrors] = useState(false);
+
+  // Error yang berasal dari field inputan user
+  const [fieldErrors, setFieldErrors] = useState({
+    PaymentMethodId: [],
+    CourseSchedule: [],
+    CourseId: [],
+  });
+
+  const [openErrorDialog, setOpenErrorDialog] = useState(false);
+
   const { AppServices, URLs } = useApiContext();
 
   useEffect(() => {
@@ -94,7 +114,7 @@ const DetailsCourse = () => {
       .then((res) => {
         let result = res.data;
         setMainCourse(result);
-        console.log(result);
+        // console.log(result);
       })
       .catch((err) => {
         console.log(err);
@@ -105,15 +125,18 @@ const DetailsCourse = () => {
       CurrentPage: currentPage,
     };
 
-    AppServices.getSimiliarCourses(params, courseId, mainCourse.categoryId)
-      .then((res) => {
-        let result = res.data;
-        console.log(result);
-        setCourses(result.items);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // Get similiar course hanya dijalankan jika categoryId sudah ada
+    if (mainCourse?.categoryId) {
+      AppServices.getSimiliarCourses(params, courseId, mainCourse.categoryId)
+        .then((res) => {
+          let result = res.data;
+          console.log(result);
+          setCourses(result.items);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
   }, [AppServices, pageSize, currentPage, courseId, mainCourse.categoryId]);
 
   const goLeft = () => {
@@ -137,22 +160,57 @@ const DetailsCourse = () => {
         navigate("/checkout");
       })
       .catch((err) => {
-        console.log(err);
+        let status = err.response.status;
+        if (status === 400) {
+          if (!courseSchedule) {
+            setFieldErrors({
+              ...fieldErrors,
+              CourseSchedule: ["Jadwal wajib diisi"],
+            });
+          }
+        }
+
+        if (status > 400 && status < 500) {
+          setNonFieldErrors(err?.response?.data);
+          setOpenErrorDialog(true);
+        }
       });
   };
 
+  // submit untuk add to cart
   const handleSubmit = () => {
     // setIsLoading(true);
     // navigate("/success-purchase");
-    let purchaseDate = new Date().toISOString();
-    AppServices.directPurchase(paymentId, purchaseDate, courseId)
+
+    const payloads = {
+      paymentId,
+      courseSchedule,
+      courseId,
+    };
+    AppServices.directPurchase(payloads)
       .then((res) => {
         setTimeout(() => {
           navigate("/success-purchase");
-        }, 1000);
+        }, 500);
       })
       .catch((err) => {
-        console.log(err);
+        setDialogOpen(false); // menutu dialog opsi pembayaran
+        const status = err.response.status;
+        if (status === 400) {
+          // const errors = err.response.data.errors;
+          // jika courseSchedule kosong
+          if (!courseSchedule) {
+            setFieldErrors({
+              ...fieldErrors,
+              CourseSchedule: ["Jadwal wajib diisi"],
+            });
+          }
+        }
+
+        if (status > 400 && status < 500) {
+          setNonFieldErrors(err?.response?.data);
+          setOpenErrorDialog(true);
+        }
       })
       .finally(() => {
         // setIsLoading(false);
@@ -167,7 +225,7 @@ const DetailsCourse = () => {
         sx={{
           width: "100%",
           borderBottom: "1px solid #E4E4E4",
-          padding: 2,
+          padding: 0.5,
         }}
       >
         <Box
@@ -183,7 +241,7 @@ const DetailsCourse = () => {
         >
           <Box
             component={"img"}
-            src={URLs.IMG_URL + mainCourse.image}
+            src={mainCourse?.image && URLs.IMG_URL + mainCourse?.image}
             sx={{
               borderRadius: "1rem",
               width: "400px",
@@ -234,8 +292,15 @@ const DetailsCourse = () => {
             {/* End Section (Category, Title, Price) */}
 
             {/* Section Select */}
-            <Box sx={{ maxWidth: "250px", width: { xs: "100%", sm: "100%" } }}>
-              <FormControl fullWidth>
+            <Box
+              sx={{
+                width: { xs: "100%", sm: "100%", md: "250px" },
+              }}
+            >
+              <FormControl
+                fullWidth
+                error={fieldErrors?.CourseSchedule?.length !== 0}
+              >
                 <InputLabel id="demo-simple-select-label">
                   Pilih Jadwal Kelas
                 </InputLabel>
@@ -246,12 +311,17 @@ const DetailsCourse = () => {
                   label="Pilih Jadwal Kelas"
                   onChange={(e) => setCourseSchedule(e.target.value)}
                 >
-                  {mainCourse.courseSchedules.map((val, i) => (
+                  {mainCourse?.courseSchedules?.map((val, i) => (
                     <MenuItem key={i} value={val.courseDate}>
                       {formatDate(val.courseDate)}
                     </MenuItem>
                   ))}
                 </Select>
+                {fieldErrors?.CourseSchedule?.lenght !== 0 && (
+                  <FormHelperText>
+                    {fieldErrors?.CourseSchedule[0]}
+                  </FormHelperText>
+                )}
               </FormControl>
             </Box>
             {/* End Section Select */}
@@ -260,12 +330,14 @@ const DetailsCourse = () => {
             <Box
               sx={{
                 display: "flex",
+                flexDirection: { xs: "column", sm: "column", md: "row" },
+                width: "100%",
                 gap: 2,
               }}
             >
               <Button
                 sx={{
-                  width: "233.5px",
+                  minWidth: "233.5px",
                   borderRadius: "0.5rem",
                   marginY: "0.25rem",
                   textAlign: "center",
@@ -277,7 +349,7 @@ const DetailsCourse = () => {
               </Button>
               <Button
                 sx={{
-                  width: "233.5px",
+                  minWidth: "233.5px",
                   borderRadius: "0.5rem",
                   marginY: "0.25rem",
                 }}
@@ -305,7 +377,12 @@ const DetailsCourse = () => {
           <Typography fontSize={"1.5rem"} lineHeight={"2rem"} fontWeight={600}>
             Deskripsi
           </Typography>
-          <Typography fontSize={"1rem"} lineHeight={"1.5rem"} fontWeight={400}>
+          <Typography
+            textAlign={"justify"}
+            fontSize={"1rem"}
+            lineHeight={"1.5rem"}
+            fontWeight={400}
+          >
             {mainCourse.description}
           </Typography>
         </Box>
@@ -344,7 +421,7 @@ const DetailsCourse = () => {
             maxWidth: "1200px",
           }}
         >
-          {courses.map((course, i) => (
+          {courses?.map((course, i) => (
             <CourseCard
               key={i}
               secureId={course.id}
@@ -357,12 +434,36 @@ const DetailsCourse = () => {
         </Box>
       </Box>
       <Footer />
+
+      {/* START: Dialog untuk menampilkan opsi pembayaran */}
       <PaymentDialog
         open={dialogOpen}
         handleClose={() => setDialogOpen(false)}
         onSubmit={handleSubmit}
         setPaymentId={setPaymentId}
       />
+      {/* END: Dialog untuk menampilkan opsi pembayaran */}
+
+      {/* START: Dialog untuk menampilkan error pada submision form */}
+      <Dialog
+        open={openErrorDialog}
+        onClose={() => setOpenErrorDialog(false)}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title">{"Message"}</DialogTitle>
+        <DialogContent>
+          <Alert severity="error">
+            <AlertTitle>Error</AlertTitle>
+            <ul>
+              <li>{nonFieldErrors}</li>
+            </ul>
+          </Alert>
+        </DialogContent>
+        <DialogActions onClick={() => setOpenErrorDialog(false)}>
+          <Button autoFocus>Oke</Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

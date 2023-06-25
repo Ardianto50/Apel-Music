@@ -252,9 +252,9 @@ export const Checkout = () => {
         {/* List course */}
         {carts.map((data, i) => (
           <CheckoutList
-            id={data.id}
-            img={data.course.imageName && URLs.IMG_URL + data.course.imageName}
-            category={data.course.category.name}
+            id={data?.id}
+            img={data?.course.imageName && URLs.IMG_URL + data.course.imageName}
+            category={data?.course.category.name}
             name={data.course.name}
             price={data.course.price}
             schedule={formatDate(data.courseSchedule)}

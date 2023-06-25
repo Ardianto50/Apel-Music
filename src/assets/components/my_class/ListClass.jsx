@@ -46,7 +46,7 @@ export const ListClass = ({ id, img, category, name, schedule, price }) => {
             fontSize={"1.5rem"}
             lineHeight={"2.25rem"}
             component={"a"}
-            href="/course-details/courseIdfdskldf"
+            href={"/course-details/" + id}
           >
             {name}
           </Typography>

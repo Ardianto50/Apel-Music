@@ -28,7 +28,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "nael": "env-cmd -f .env.nael react-scripts start"
+    "nael": "env-cmd -f .env.nael react-scripts start",
+    "anto": "env-cmd -f .env.anto react-scripts start"
   },
   "eslintConfig": {
     "extends": [

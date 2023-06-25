@@ -90,6 +90,7 @@ const AppRouter = () => {
   const { GlobalDialogUtil, AuthServices } = useApiContext();
 
   useState(() => {
+    // Cek user session setiap kali melakukan perpindahan halaman/refresh halaman
     AuthServices.checkSession();
   }, [GlobalDialogUtil, AuthServices]);
 
@@ -143,6 +144,8 @@ const AppRouter = () => {
         <Route path="/admin/users" element={adminComp(<AdminUser />)} />
         {/* END: Admin Route */}
       </Routes>
+
+      {/* START: Dialog untuk memberitahu user kalo session sudah berakhir */}
       <Dialog
         open={GlobalDialogUtil.globalDialog}
         onClose={handleCloseGlobalDialog}
@@ -163,6 +166,7 @@ const AppRouter = () => {
           </Button>
         </DialogActions>
       </Dialog>
+      {/* END: Dialog untuk memberitahu user kalo session sudah berakhir */}
     </>
   );
 };

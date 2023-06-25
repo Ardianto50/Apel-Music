@@ -225,13 +225,18 @@ const ApiProvider = ({ children }) => {
     });
   };
 
-  const directPurchase = async (paymentMethodId, courseSchedule, courseId) => {
+  const directPurchase = async (params) => {
     axios.defaults.headers.common = getAuthorization();
-    return await axios.post(URLs.BASE_URL + "Purchase/Direct", {
-      paymentMethodId,
-      courseSchedule,
-      courseId,
-    });
+    const payloads = {};
+    if (params?.courseId) payloads["courseId"] = params?.courseId;
+
+    if (params?.courseSchedule)
+      payloads["courseSchedule"] = params?.courseSchedule;
+    else payloads["courseSchedule"] = null;
+
+    if (params?.paymentId) payloads["paymentId"] = params?.courseSchedule;
+
+    return await axios.post(URLs.BASE_URL + "Purchase/Direct", payloads);
   };
 
   const checkout = async (paymentMethodId, purchaseDate, shoppingCartIds) => {
