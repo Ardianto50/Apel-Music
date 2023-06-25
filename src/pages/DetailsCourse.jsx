@@ -130,7 +130,7 @@ const DetailsCourse = () => {
       AppServices.getSimiliarCourses(params, courseId, mainCourse.categoryId)
         .then((res) => {
           let result = res.data;
-          console.log(result);
+          // console.log(result);
           setCourses(result.items);
         })
         .catch((err) => {
@@ -156,7 +156,7 @@ const DetailsCourse = () => {
   const handleAddToCart = () => {
     AppServices.addToCart(courseId, courseSchedule)
       .then((res) => {
-        console.log(res);
+        // console.log(res);
         navigate("/checkout");
       })
       .catch((err) => {
@@ -217,6 +217,10 @@ const DetailsCourse = () => {
       });
     console.log(paymentId);
   };
+
+  useEffect(() => {
+    console.log(paymentId);
+  }, [paymentId]);
 
   return (
     <>

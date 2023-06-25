@@ -35,6 +35,7 @@ import { useApiContext } from "../../context/ApiProvider";
 import { useState } from "react";
 import AppTable from "../../assets/components/AppTable";
 import CommonDialog from "../../assets/components/dialogs/CommonDialog";
+import HomeIcon from "@mui/icons-material/Home";
 // import Chart from "./Chart";
 // import Deposits from "./Deposits";
 // import Orders from "./Orders";
@@ -105,39 +106,6 @@ const Drawer = styled(MuiDrawer, {
 
 // TODO remove, this demo shouldn't need to reset the theme.
 const defaultTheme = createTheme();
-
-const PaymentList = ({ name, image }) => {
-  return (
-    <>
-      <Stack
-        direction={"row"}
-        justifyContent={"space-between"}
-        alignItems={"center"}
-        bgcolor={"aqua"}
-        marginY={1}
-        paddingX={4}
-      >
-        <Stack alignItems={"center"} direction={"row"}>
-          <img src={image} alt="" />
-          <Typography variant="h6" paddingX={2}>
-            {name}
-          </Typography>
-        </Stack>
-        <Grid item>
-          <Button
-            variant="contained"
-            sx={{
-              bgcolor: "#F2C94C",
-              "&:hover": { bgcolor: "#FFCD38" },
-            }}
-          >
-            Edit
-          </Button>
-        </Grid>
-      </Stack>
-    </>
-  );
-};
 
 const DialogAdd = ({ open, onClose, onSave }) => {
   return (
@@ -279,6 +247,7 @@ export default function AdminPayment() {
 
   const handleEdit = (paymentId) => {
     clearFields();
+    clearErrorInfo();
     setEditedId(paymentId);
     setOpenEditPayment(true);
     prepareEditField(paymentId);
@@ -287,6 +256,7 @@ export default function AdminPayment() {
   const handleAdd = () => {
     setOpenAddPayment(true);
     clearFields();
+    clearErrorInfo();
   };
 
   const refreshPage = () => {
@@ -322,7 +292,6 @@ export default function AdminPayment() {
   };
 
   const handleAddPayment = () => {
-    clearErrorInfo();
     const payload = {
       name: paymentName,
       image,
@@ -348,7 +317,6 @@ export default function AdminPayment() {
   };
 
   const handleEditPayment = () => {
-    clearErrorInfo();
     const payload = {
       name: paymentName,
       image: editImage,
@@ -376,7 +344,7 @@ export default function AdminPayment() {
   };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
         <AppBar position="absolute" open={open} sx={{ bgcolor: "#F2C94C" }}>
@@ -406,7 +374,10 @@ export default function AdminPayment() {
             >
               Admin Dashboard
             </Typography>
-            <IconButton color="inherit">
+            <IconButton href="/" color="inherit">
+              <HomeIcon />
+            </IconButton>
+            <IconButton href="/logout" color="inherit">
               <LogoutIcon />
             </IconButton>
           </Toolbar>
@@ -510,6 +481,8 @@ export default function AdminPayment() {
             fullWidth
             value={paymentName}
             onChange={(e) => setPaymentName(e.target.value)}
+            error={fieldErrors.Name.length !== 0}
+            helperText={fieldErrors.Name[0]}
           />
           <Box
             component={"img"}
@@ -531,6 +504,8 @@ export default function AdminPayment() {
             type="file"
             fullWidth
             onChange={(e) => setEditImage(e.currentTarget.files[0])}
+            error={fieldErrors.Image.length !== 0}
+            helperText={fieldErrors.Image[0]}
           />
           <Box marginY={2}>
             <Switch
@@ -566,6 +541,8 @@ export default function AdminPayment() {
             fullWidth
             value={paymentName}
             onChange={(e) => setPaymentName(e.target.value)}
+            error={fieldErrors.Name.length !== 0}
+            helperText={fieldErrors.Name[0]}
           />
           <Box
             component={"img"}
@@ -583,10 +560,12 @@ export default function AdminPayment() {
             type="file"
             fullWidth
             onChange={(e) => setImage(e.currentTarget.files[0])}
+            error={fieldErrors.Image.length !== 0}
+            helperText={fieldErrors.Image[0]}
           />
         </Box>
       </CommonDialog>
       {/* START: Handle add payment */}
-    </ThemeProvider>
+    </>
   );
 }

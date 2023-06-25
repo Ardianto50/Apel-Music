@@ -234,7 +234,7 @@ const ApiProvider = ({ children }) => {
       payloads["courseSchedule"] = params?.courseSchedule;
     else payloads["courseSchedule"] = null;
 
-    if (params?.paymentId) payloads["paymentId"] = params?.courseSchedule;
+    if (params?.paymentId) payloads["paymentMethodId"] = params?.paymentId;
 
     return await axios.post(URLs.BASE_URL + "Purchase/Direct", payloads);
   };

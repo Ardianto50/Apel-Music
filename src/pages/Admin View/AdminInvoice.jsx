@@ -31,6 +31,8 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useApiContext } from "../../context/ApiProvider";
 import { formatDate } from "../../utility/dateFormat";
+import HomeIcon from "@mui/icons-material/Home";
+import theme from "../../custom_mui/theme";
 // import Chart from "./Chart";
 // import Deposits from "./Deposits";
 // import Orders from "./Orders";
@@ -289,7 +291,7 @@ export default function AdminInvoice() {
   }, [AdminServices, pageSize, currentPage]);
 
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
         <AppBar position="absolute" open={open} sx={{ bgcolor: "#F2C94C" }}>
@@ -319,7 +321,10 @@ export default function AdminInvoice() {
             >
               Admin Dashboard
             </Typography>
-            <IconButton color="inherit">
+            <IconButton href="/" color="inherit">
+              <HomeIcon />
+            </IconButton>
+            <IconButton href="/logout" color="inherit">
               <LogoutIcon />
             </IconButton>
           </Toolbar>
@@ -391,6 +396,6 @@ export default function AdminInvoice() {
           </Container>
         </Box>
       </Box>
-    </ThemeProvider>
+    </>
   );
 }

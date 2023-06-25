@@ -17,6 +17,7 @@ import Typography from "@mui/material/Typography";
 import { ThemeProvider, createTheme, styled } from "@mui/material/styles";
 import * as React from "react";
 import { mainListItems } from "./listItems";
+import HomeIcon from "@mui/icons-material/Home";
 // import Chart from "./Chart";
 // import Deposits from "./Deposits";
 // import Orders from "./Orders";
@@ -94,7 +95,7 @@ export default function AdminPage() {
   };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
         <AppBar position="absolute" open={open} sx={{ bgcolor: "#F2C94C" }}>
@@ -124,6 +125,9 @@ export default function AdminPage() {
             >
               Admin Dashboard
             </Typography>
+            <IconButton href="/" color="inherit">
+              <HomeIcon />
+            </IconButton>
             <IconButton href="/logout" color="inherit">
               <LogoutIcon />
             </IconButton>
@@ -189,6 +193,6 @@ export default function AdminPage() {
           </Container>
         </Box>
       </Box>
-    </ThemeProvider>
+    </>
   );
 }

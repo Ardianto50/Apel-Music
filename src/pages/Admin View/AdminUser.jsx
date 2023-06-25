@@ -33,6 +33,7 @@ import { useState } from "react";
 import { useApiContext } from "../../context/ApiProvider";
 import CommonDialog from "../../assets/components/dialogs/CommonDialog";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import HomeIcon from "@mui/icons-material/Home";
 // import Chart from "./Chart";
 // import Deposits from "./Deposits";
 // import Orders from "./Orders";
@@ -386,7 +387,7 @@ export default function AdminUser() {
   };
 
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <>
       <Box sx={{ display: "flex" }}>
         <CssBaseline />
         <AppBar
@@ -420,7 +421,10 @@ export default function AdminUser() {
             >
               Admin Dashboard
             </Typography>
-            <IconButton color="inherit">
+            <IconButton href="/" color="inherit">
+              <HomeIcon />
+            </IconButton>
+            <IconButton href="/logout" color="inherit">
               <LogoutIcon />
             </IconButton>
           </Toolbar>
@@ -638,6 +642,6 @@ export default function AdminUser() {
           />
         </Grid>
       </CommonDialog>
-    </ThemeProvider>
+    </>
   );
 }
