@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 const ApiContext = createContext();
 
 const ApiProvider = ({ children }) => {
-  const baseUrl = process.env.REACT_APP_BACKEND_API_URL + "api/";
+  const baseUrl = "https://localhost:2032/api/";
 
   const [globalDialog, setGlobalDialog] = useState(false);
   const [globalDialogMsg, setGlobalDialogMsg] = useState("");
